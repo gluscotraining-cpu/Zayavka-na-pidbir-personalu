@@ -1,1 +1,843 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Заявка на підбір персоналу</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background-color: #060a12; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+        input, textarea, select { user-select: text; font-size: 16px !important; }
+        
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='%23n'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 0;
+        }
+
+        .blob { position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; }
+        .glass { background: rgba(30, 41, 59, 0.45); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.07); box-shadow: 0 4px 24px rgba(0,0,0,0.15); }
+        .glass-input { background: rgba(10,16,28,0.7); border: 1px solid rgba(255,255,255,0.09); color: #f1f5f9; transition: all 0.25s ease; }
+        .glass-input:focus { border-color: #3b82f6; background: rgba(10,16,28,0.85); outline: none; }
+        .error-input { border-color: #ef4444 !important; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important; }
+
+        .animate-fade { animation: fadeUp 0.38s ease forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+        .animate-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        .prio-chip { flex: 1; padding: 12px 6px; border-radius: 12px; text-align: center; font-size: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: #64748b; cursor: pointer; transition: all 0.2s; }
+        .prio-chip.active-norm { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color: #93c5fd; }
+        .prio-chip.active-urgent { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+
+        select option { background-color: #0f172a; color: white; }
+        
+        .summary-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #6366f1; letter-spacing: 0.1em; margin-top: 14px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2px;}
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
+        .summary-label { color: #64748b; }
+        .summary-val { font-weight: 500; text-align: right; max-width: 65%; color: #e2e8f0; }
+        .summary-block-text { font-size: 13px; color: #cbd5e1; background: rgba(255,255,255,0.02); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); margin-top: 2px; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+    </style>
+</head>
+<body class="text-white min-h-screen p-6 pb-24 flex justify-center relative">
+
+    <div class="blob fixed rounded-full pointer-events-none z-0 top-[-15%] left-[-15%] w-[420px] h-[420px]" style="background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%);"></div>
+    <div class="blob fixed rounded-full pointer-events-none z-0 bottom-[-15%] right-[-15%] w-[380px] h-[380px]" style="background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);"></div>
+
+    <div class="page-wrap w-full max-w-sm relative z-10">
+
+        <div id="page-1" class="page-section flex flex-col items-center pt-8 animate-fade">
+            <div class="w-full text-center mb-10">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-tr from-blue-600/20 to-indigo-500/20 rounded-3xl flex items-center justify-center border border-white/10 shadow-lg shadow-blue-500/10">
+                    <i data-lucide="briefcase" class="w-10 h-10 text-blue-400"></i>
+                </div>
+                <h1 class="text-3xl font-bold tracking-tight mb-2" style="font-family: 'Syne', sans-serif;">HR Рекрутинг</h1>
+                <p class="text-[10px] font-bold tracking-[0.2em] text-blue-400 uppercase" style="font-family: 'Syne', sans-serif;">Подача заявок на персонал</p>
+            </div>
+            
+            <div class="w-full space-y-4">
+                <div class="glass rounded-3xl p-5 border border-blue-500/10 relative overflow-hidden cursor-pointer" onclick="startNewRequest()">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-blue-500/10 rounded-xl text-blue-400"><i data-lucide="user-plus"></i></div>
+                        <div>
+                            <h3 class="font-bold text-lg text-white" style="font-family: 'Syne', sans-serif;">Нова заявка</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Запит на підбір нового співробітника</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="text-slate-500 ml-auto w-5 h-5"></i>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer" onclick="alert('Розділ заявок буде підключено на етапі таблиць!')">
+                        <i data-lucide="clipboard-list" class="text-emerald-400"></i>
+                        <span class="font-semibold text-sm text-slate-200">Мої заявки</span>
+                    </div>
+                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-2 cursor-pointer" onclick="showPage('page-2')">
+                        <i data-lucide="user-cog" class="text-purple-400"></i>
+                        <span class="font-semibold text-sm text-slate-200">Власний кабінет</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-2" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-1')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Власний кабінет</h2>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-xs text-slate-400 mb-6 leading-relaxed">Вкажіть ваші дані для швидкого автозаповнення в майбутньому.</p>
+                <div class="mb-4">
+                    <div class="field-label"><i data-lucide="user" class="w-3.5 h-3.5"></i> Ваше ПІБ</div>
+                    <input type="text" id="user-fio" placeholder="Прізвище Ім'я" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div class="mb-6">
+                    <div class="field-label"><i data-lucide="phone" class="w-3.5 h-3.5"></i> Номер телефону</div>
+                    <input type="tel" id="user-phone" placeholder="38 0__ ___ __ __" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div class="btn-primary" onclick="saveProfile()">Зберегти та продовжити</div>
+            </div>
+        </div>
+
+        <div id="page-3" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-1')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Підрозділ та Керівник</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Структура компанії (для кого ведеться підбір кандидата)</span><span>1 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <div>
+                    <div class="field-label">Департамент / Відділ / ... (Локація № АЗК)</div>
+                    <input type="text" id="department" placeholder="Напр: АЗК №55, Офіс розвитку..." class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div>
+                    <div class="field-label">П.І.Б. керівника департаменту/відділу/Локація (№ АЗК)</div>
+                    <input type="text" id="manager-fio" placeholder="Напр: Петров Петро Петрович" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div>
+                    <div class="field-label">Вакансія погоджена з керівником департаменту/відділу?</div>
+                    <select id="manager-approved" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="Так" selected>🟢 Так, погоджено</option>
+                        <option value="Ні">🔴 Ні, не погоджено</option>
+                    </select>
+                </div>
+                <button onclick="goToPage3b()" class="btn-primary mt-2">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-3b" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-3')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Назва вакансії</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Посада та кількість підлеглих в підпорядкуванні</span><span>2 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <div>
+                    <div class="field-label">Назва вакантної посади</div>
+                    <input type="text" id="job-title" placeholder="Напр: Касир, Оператор, Менеджер..." class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <div class="field-label">Кількість вакансій</div>
+                        <input type="number" id="vacancies-count" placeholder="Напр: 5" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                    </div>
+                    <div>
+                        <div class="field-label">Підлеглі (кількість осіб якими він буде керувати)</div>
+                        <select id="subordinates-count" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                            <option value="" disabled selected>Оберіть кількість...</option>
+                            <option value="Немає підлеглих">Немає підлеглих</option>
+                            <option value="до 10">до 10</option>
+                            <option value="від 10 до 20">від 10 до 20</option>
+                            <option value="від 20 до 50">від 20 до 50</option>
+                            <option value="від 50 до 70">від 50 до 70</option>
+                            <option value="від 70 до 100">від 70 до 100</option>
+                            <option value="більше 100+">більше 100+</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="field-label">Ключові функції (Обов'язки на посаді)</div>
+                    <textarea id="job-functions" placeholder="Опишіть головні завдання, які виконуватиме працівник..." class="w-full p-4 rounded-xl glass-input text-[15px] h-24 resize-none"></textarea>
+                </div>
+                <button onclick="goToPage4()" class="btn-primary mt-2">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-4" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-3b')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Причина пошуку та умови</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Причина та оплата</span><span>3 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <div>
+                    <div class="field-label">Причина пошуку</div>
+                    <select id="search-reason" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="" disabled selected>Оберіть причину...</option>
+                        <option value="Звільнення працівника (заміна)">Звільнення працівника (заміна)</option>
+                        <option value="Відкриття нової посади">Відкриття нової посади</option>
+                        <option value="Декретна відпустка">Декретна відпустка</option>
+                        <option value="Планове розширення штату">Планове розширення штату</option>
+                        <option value="Сезонне розширення">Сезонне розширення штату</option>
+                        <option value="Створення нового відділу">Створення нового відділу</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="field-label">Пріоритет закриття</div>
+                    <div class="prio-chips">
+                        <div class="prio-chip active-norm" onclick="selectPriority(this, 'Стандартний')">🔵 Стандартний</div>
+                        <div class="prio-chip" onclick="selectPriority(this, 'Терміновий')">🔴 Терміновий</div>
+                    </div>
+                    <input type="hidden" id="priority-value" value="Стандартний">
+                </div>
+                <div>
+                    <div class="field-label">ЗП на випробувальний термін (₴)</div>
+                    <input type="text" id="salary-probation" placeholder="Напр: 22000" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div>
+                    <div class="field-label">ЗП після випробувального терміну (₴)</div>
+                    <input type="text" id="salary-after" placeholder="Напр: 25000" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div>
+                    <div class="field-label">Тривалість випробувального терміну</div>
+                    <select id="probation-duration" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="Без випробувального терміну">Без випробувального терміну</option>
+                        <option value="1 місяць">1 місяць</option>
+                        <option value="2 місяці">2 місяці</option>
+                        <option value="3 місяці" selected>3 місяці (Стандарт)</option>
+                        <option value="6 місяців">6 місяців</option>
+                    </select>
+                </div>
+                <button onclick="goToPage5()" class="btn-primary mt-2">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-5" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-4')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Профіль кандидата</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Вік та Освіта</span><span>4 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <div class="field-label">Вік від</div>
+                        <select id="candidate-age-from" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                            <option value="" disabled selected>Від (16-60)...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="field-label">Вік до</div>
+                        <select id="candidate-age-to" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                            <option value="" disabled selected>До (20-100)...</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="field-label">Рівень освіти</div>
+                    <select id="candidate-education" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="" disabled selected>Оберіть рівень освіти...</option>
+                        <option value="Середня">Середня</option>
+                        <option value="Середня спеціальна / Технічна">Середня спеціальна / Технічна</option>
+                        <option value="Незакінчена вища">Незакінчена вища</option>
+                        <option value="Вища">Вища</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="field-label">Спеціальність</div>
+                    <input type="text" id="candidate-specialty" placeholder="Напр: Менеджмент, Економіка..." class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <button onclick="goToPage5b()" class="btn-primary mt-2">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-5b" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-5')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Досвід роботи</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Досвід роботи</span><span>5 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl flex flex-col h-[55vh]">
+                <div class="field-label mb-2">Досвід роботи (сфери, компанії, рівень посади)</div>
+                <textarea id="candidate-experience" placeholder="Детально опишіть вимоги до досвіду кандидата..." class="w-full flex-1 p-4 rounded-xl glass-input resize-none text-[15px] leading-relaxed"></textarea>
+                <button onclick="goToPage5c()" class="btn-primary mt-4">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-5c" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-5b')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Знання та навички</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Професійні знання та вміння</span><span>6 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl flex flex-col h-[55vh]">
+                <div class="field-label mb-2">Професійні знання, вміння, навички</div>
+                <textarea id="candidate-skills" placeholder="Напишіть, якими професійними навичками повинен володіти кандидат..." class="w-full flex-1 p-4 rounded-xl glass-input resize-none text-[15px] leading-relaxed"></textarea>
+                <button onclick="goToPage6()" class="btn-primary mt-4">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-6" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-5c')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Знання мов та ПК</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Мови, ПК та Програми</span><span>7 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4 max-h-[65vh] overflow-y-auto custom-scroll">
+                <div>
+                    <div class="field-label">Знання мов та рівень володіння</div>
+                    <div id="languages-container" class="space-y-2 mb-2"></div>
+                    <button type="button" onclick="addLanguageRow()" class="flex items-center gap-1 text-xs text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 px-3 py-2 rounded-xl transition-all font-semibold">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Додати мову
+                    </button>
+                </div>
+
+                <div>
+                    <div class="field-label">Рівень володіння ПК</div>
+                    <select id="candidate-pc" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="Базовий рівень">Базовий рівень</option>
+                        <option value="Впевнений користувач" selected>Впевнений користувач</option>
+                        <option value="Просунутий / Експерт">Просунутий / Експерт</option>
+                    </select>
+                </div>
+
+                <div>
+                    <div class="field-label">Спеціалізовані програми</div>
+                    <input type="text" id="custom-programs" placeholder="Введіть софт через кому (напр: 1С, Excel, SAP)..." class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+
+                <button onclick="goToPage6b()" class="btn-primary w-full mt-2">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-6b" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-6')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Якості кандидата</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Особисті якості</span><span>8 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl flex flex-col h-[55vh]">
+                <div class="field-label mb-2">Особисті якості кандидата</div>
+                <textarea id="candidate-traits" placeholder="Напр: Чесність, пунктуальність, комунікабельність..." class="w-full flex-1 p-4 rounded-xl glass-input resize-none text-[15px] leading-relaxed"></textarea>
+                <button onclick="goToPage7()" class="btn-primary mt-4">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-7" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-6b')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Контроль процесу</h2>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Контактна особа</span><span>9 / 9</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <p class="text-xs text-slate-400 leading-relaxed">Вкажіть інформацію про відповідальну особу, яка контролює хід підбору кадрів.</p>
+                <div>
+                    <div class="field-label">Контактна особа (П.І.Б.)</div>
+                    <input type="text" id="contact-fio" placeholder="Іванов Іван Іванович" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div>
+                    <div class="field-label">Контактний номер телефону</div>
+                    <input type="tel" id="contact-phone" placeholder="38 0__ ___ __ __" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div>
+                    <div class="field-label">Контактний E-mail</div>
+                    <input type="email" id="contact-email" placeholder="example@glusco.com" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <button onclick="renderSummary()" class="w-full bg-emerald-600 hover:bg-emerald-500 p-4 rounded-xl font-semibold text-white transition-all mt-2">Перевірити повну заявку</button>
+            </div>
+        </div>
+
+        <div id="page-8" class="page-section hidden w-full pb-10">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-7')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2>Перевірка та підтвердження</h2>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl text-[14px] leading-relaxed shadow-lg relative overflow-hidden w-full max-h-[70vh] overflow-y-auto custom-scroll">
+                <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
+                
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-indigo-500/20 rounded-lg"><i data-lucide="file-check" class="text-indigo-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-base text-indigo-300">Картка вакансії (Excel формат)</span>
+                </div>
+
+                <div class="summary-section-title">Структура та Керівництво</div>
+                <div class="summary-row"><span class="summary-label">Департамент/Відділ:</span> <span id="sum-dept" class="summary-val font-medium text-white text-right max-w-[65%]"></span></div>
+                <div class="summary-row"><span class="summary-label">Керівник:</span> <span id="sum-manager" class="summary-val font-medium text-white text-right max-w-[65%]"></span></div>
+                <div class="summary-row"><span class="summary-label">Узгоджено з керівником:</span> <span id="sum-approved" class="summary-val font-semibold text-emerald-400"></span></div>
+
+                <div class="summary-section-title">Деталі Посади</div>
+                <div class="summary-row"><span class="summary-label">Вакантна посада:</span> <span id="sum-title" class="summary-val font-bold text-white text-right max-w-[65%]"></span></div>
+                <div class="summary-row"><span class="summary-label">Кількість вакансій:</span> <span id="sum-v-count" class="summary-val"></span></div>
+                <div class="summary-row"><span class="summary-label">Підлеглі у посади:</span> <span id="sum-sub-count" class="summary-val"></span></div>
+                
+                <div class="text-[11px] text-slate-500 mt-2">Ключові функції на посаді:</div>
+                <div id="sum-functions" class="summary-block-text"></div>
+
+                <div class="summary-section-title">Причина пошуку та умови</div>
+                <div class="summary-row"><span class="summary-label">Причина пошуку:</span> <span id="sum-reason" class="summary-val text-amber-400 text-right max-w-[65%]"></span></div>
+                <div class="summary-row"><span class="summary-label">Пріоритет:</span> <span id="sum-prio" class="summary-val"></span></div>
+                <div class="summary-row"><span class="summary-label">ЗП (Випроб. термін):</span> <span id="sum-sal-prob" class="summary-val text-emerald-400"></span></div>
+                <div class="summary-row"><span class="summary-label">ЗП (Після випробув.):</span> <span id="sum-sal-after" class="summary-val text-emerald-400"></span></div>
+                <div class="summary-row"><span class="summary-label">Випробув. термін:</span> <span id="sum-prob-dur" class="summary-val"></span></div>
+
+                <div class="summary-section-title">Вимоги до кандидата</div>
+                <div class="summary-row"><span class="summary-label">Бажаний вік:</span> <span id="sum-age" class="summary-val"></span></div>
+                <div class="summary-row"><span class="summary-label">Рівень освіти:</span> <span id="sum-edu" class="summary-val text-white text-right max-w-[65%]"></span></div>
+                <div class="summary-row"><span class="summary-label">Спеціальність:</span> <span id="sum-specialty" class="summary-val text-white text-right max-w-[65%]"></span></div>
+                
+                <div class="text-[11px] text-slate-500 mt-2">Досвід роботи:</div>
+                <div id="sum-exp" class="summary-block-text"></div>
+                
+                <div class="text-[11px] text-slate-500 mt-2">Знання та навички:</div>
+                <div id="sum-skills" class="summary-block-text"></div>
+
+                <div class="summary-row mt-2"><span class="summary-label">Знання мов (Рівні):</span> <span id="sum-lang-levels" class="summary-val text-right max-w-[65%]"></span></div>
+                <div class="summary-row"><span class="summary-label">Володіння ПК:</span> <span id="sum-pc" class="summary-val"></span></div>
+                <div class="summary-row"><span class="summary-label">Спеціалізований софт:</span> <span id="sum-programs" class="summary-val text-right max-w-[65%]"></span></div>
+                
+                <div class="text-[11px] text-slate-500 mt-2">Особисті якості:</div>
+                <div id="sum-traits" class="summary-block-text"></div>
+
+                <div class="summary-section-title">Контроль та зв'язок</div>
+                <div class="summary-row"><span class="summary-label">Куратор процесу:</span> <span id="sum-c-fio" class="summary-val text-blue-400"></span></div>
+                <div class="summary-row"><span class="summary-label">Телефон / E-mail:</span> <span id="sum-c-contacts" class="summary-val text-white text-xs"></span></div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="showPage('page-3')" class="flex-1 bg-slate-700/50 p-4 rounded-xl font-semibold text-white">Редагувати з нуля</button>
+                <button onclick="fakeSubmit()" class="flex-1 bg-blue-600 hover:bg-blue-500 p-4 rounded-xl font-semibold text-white flex justify-center items-center gap-2 shadow-lg">
+                    <i data-lucide="send" class="w-5 h-5"></i> Надіслати в HR
+                </button>
+            </div>
+        </div>
+
+        <div id="page-success" class="page-section hidden pt-16 text-center">
+            <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl shadow-emerald-500/5">✅</div>
+            <h2 class="text-2xl font-bold text-emerald-400 mb-2">Заявку сформовано!</h2>
+            <p class="text-sm text-slate-400 mb-8 max-w-xs mx-auto leading-relaxed">Всі стовпчики згідно з регламентом успішно оброблені. Заявка готова для передачі в Google Таблицю.</p>
+            <button onclick="showPage('page-1')" class="w-full bg-blue-600 p-4 rounded-xl font-semibold text-white">На головну сторінку</button>
+        </div>
+
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if(tg) { tg.expand(); }
+
+        const PAGE_BACK_MAP = {
+            'page-2': 'page-1',
+            'page-3': 'page-1',
+            'page-3b': 'page-3',
+            'page-4': 'page-3b',
+            'page-5': 'page-4',
+            'page-5b': 'page-5',
+            'page-5c': 'page-5b',
+            'page-6': 'page-5c',
+            'page-6b': 'page-6',
+            'page-7': 'page-6b',
+            'page-8': 'page-7',
+        };
+
+        if (tg?.BackButton) {
+            tg.BackButton.onClick(() => {
+                const dest = PAGE_BACK_MAP[currentPageId];
+                if (dest) showPage(dest);
+                else tg.BackButton.hide();
+            });
+        }
+
+        let currentPageId = 'page-1';
+        lucide.createIcons();
+
+        // Автоматичне наповнення списків віку (від 16 до 60 та від 20 до 100)
+        window.addEventListener('DOMContentLoaded', () => {
+            const ageFromSelect = document.getElementById('candidate-age-from');
+            const ageToSelect = document.getElementById('candidate-age-to');
+            if(ageFromSelect && ageToSelect) {
+                for(let i = 16; i <= 60; i++) {
+                    let opt = document.createElement('option');
+                    opt.value = i; opt.innerText = i;
+                    ageFromSelect.appendChild(opt);
+                }
+                for(let i = 20; i <= 100; i++) {
+                    let opt = document.createElement('option');
+                    opt.value = i; opt.innerText = i;
+                    if (i === 45) opt.selected = true; // дефолтний вибір для краси
+                    ageToSelect.appendChild(opt);
+                }
+            }
+        });
+
+        function addLanguageRow(lang = "", level = "") {
+            const container = document.getElementById('languages-container');
+            const rowId = 'lang-row-' + Date.now() + Math.random().toString(36).substr(2, 5);
+            
+            const languages = ["Українська", "Англійська", "Російська", "Німецька", "Польська", "Французька", "Іспанська", "Італійська", "Інша"];
+            const levels = ["A1 - Початковий", "A2 - Елементарний", "B1 - Середній", "B2 - Вище середнього", "C1 - Просунутий", "C2 - Вільне володіння"];
+            
+            let langOptions = languages.map(l => `<option value="${l}" ${l === lang ? 'selected' : ''}>${l}</option>`).join('');
+            let levelOptions = levels.map(v => `<option value="${v}" ${v === level ? 'selected' : ''}>${v}</option>`).join('');
+            
+            const rowHtml = `
+                <div id="${rowId}" class="flex items-center gap-2 bg-black/30 p-2 rounded-xl border border-white/5 animate-fade">
+                    <select class="flex-1 p-2 rounded-lg glass-input text-xs appearance-none cursor-pointer lang-select-val">
+                        <option value="" disabled ${!lang ? 'selected' : ''}>Мова...</option>
+                        ${langOptions}
+                    </select>
+                    <span class="text-slate-500 text-xs">—</span>
+                    <select class="flex-1 p-2 rounded-lg glass-input text-xs appearance-none cursor-pointer level-select-val">
+                        <option value="" disabled ${!level ? 'selected' : ''}>Рівень...</option>
+                        ${levels.map(lvl => `<option value="${lvl}" ${lvl.startsWith(level) || lvl === level ? 'selected' : ''}>${lvl}</option>`).join('')}
+                    </select>
+                    <button type="button" onclick="removeLanguageRow('${rowId}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', rowHtml);
+            lucide.createIcons();
+        }
+        
+        function removeLanguageRow(id) {
+            const row = document.getElementById(id);
+            if (row) row.remove();
+        }
+
+        addLanguageRow("Українська", "C2");
+
+        function showPage(id) {
+            document.querySelectorAll('.page-section').forEach(p => { p.classList.add('hidden'); });
+            const targetPage = document.getElementById(id);
+            targetPage.classList.remove('hidden'); 
+            window.scrollTo(0, 0);
+            if (tg?.BackButton) {
+                id !== 'page-1' ? tg.BackButton.show() : tg.BackButton.hide();
+            }
+            currentPageId = id;
+            lucide.createIcons();
+        }
+
+        function startNewRequest() {
+            if (localStorage.getItem('fio')) showPage('page-3');
+            else showPage('page-2');
+        }
+
+        function saveProfile() {
+            const fio = document.getElementById('user-fio').value.trim();
+            const phone = document.getElementById('user-phone').value.trim();
+            if(!fio || !phone) { alert("⚠️ Будь ласка, заповніть поля!"); return; }
+            localStorage.setItem('fio', fio);
+            localStorage.setItem('phone', phone);
+            showPage('page-3');
+        }
+
+        function goToPage3b() {
+            if(!document.getElementById('department').value.trim() || !document.getElementById('manager-fio').value.trim()) {
+                alert("⚠️ Заповніть обов'язкові поля про підрозділ та керівника!"); return;
+            }
+            showPage('page-3b');
+        }
+
+        function goToPage4() {
+            if(!document.getElementById('job-title').value.trim() || !document.getElementById('vacancies-count').value || !document.getElementById('subordinates-count').value || !document.getElementById('job-functions').value.trim()) {
+                alert("⚠️ Вкажіть назву посади, кількість вакансій, підлеглих та обов'язки!"); return;
+            }
+            showPage('page-4');
+        }
+
+        function selectPriority(el, val) {
+            document.querySelectorAll('.prio-chip').forEach(c => c.classList.remove('active-norm', 'active-urgent'));
+            el.classList.add(val === 'Стандартний' ? 'active-norm' : 'active-urgent');
+            document.getElementById('priority-value').value = val;
+        }
+
+        function goToPage5() {
+            if(!document.getElementById('search-reason').value || !document.getElementById('salary-probation').value.trim() || !document.getElementById('salary-after').value.trim()) {
+                alert("⚠️ Оберіть причину та вкажіть умови заробітної плати!"); return;
+            }
+            showPage('page-5');
+        }
+
+        function goToPage5b() {
+            if(!document.getElementById('candidate-age-from').value || !document.getElementById('candidate-age-to').value || !document.getElementById('candidate-education').value || !document.getElementById('candidate-specialty').value.trim()) {
+                alert("⚠️ Оберіть вік, рівень освіти та вкажіть спеціальність!"); return;
+            }
+            const fromAge = parseInt(document.getElementById('candidate-age-from').value);
+            const toAge = parseInt(document.getElementById('candidate-age-to').value);
+            if (toAge < fromAge) {
+                alert("⚠️ Помилка: Вік 'до' не може бути меншим за вік 'від'!"); return;
+            }
+            showPage('page-5b');
+        }
+
+        function goToPage5c() {
+            if(!document.getElementById('candidate-experience').value.trim()) {
+                alert("⚠️ Заповніть вимоги щодо досвіду роботи!"); return;
+            }
+            showPage('page-5c'); 
+        }
+
+        function goToPage6() {
+            if(!document.getElementById('candidate-skills').value.trim()) {
+                alert("⚠️ Заповніть поле професійних знань та вмінь!"); return;
+            }
+            showPage('page-6');
+        }
+
+        function goToPage6b() {
+            const langRows = document.querySelectorAll('#languages-container > div');
+            let valid = true;
+            let count = 0;
+            
+            langRows.forEach(row => {
+                const langVal = row.querySelector('.lang-select-val').value;
+                const levelVal = row.querySelector('.level-select-val').value;
+                if(!langVal || !levelVal) { valid = false; }
+                count++;
+            });
+            
+            if(count === 0) {
+                alert("⚠️ Додайте хоча б одну мову та рівень володіння через кнопку + !"); return;
+            }
+            if(!valid) {
+                alert("⚠️ Будь ласка, заповніть обрані мови та рівні або видаліть порожній рядок!"); return;
+            }
+            showPage('page-6b');
+        }
+
+        function goToPage7() {
+            if(!document.getElementById('candidate-traits').value.trim()) {
+                alert("⚠️ Опишіть особисті якості кандидата!"); return;
+            }
+            showPage('page-7');
+        }
+
+        function renderSummary() {
+            if(!document.getElementById('contact-fio').value.trim() || !document.getElementById('contact-phone').value.trim()) {
+                alert("⚠️ Вкажіть контактну особу та її номер телефону!"); return;
+            }
+
+            const emailField = document.getElementById('contact-email');
+            const emailValue = emailField.value.trim();
+            if (emailValue !== "") {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailValue)) {
+                    alert("⚠️ Помилка: Якщо ви заповнюєте поле E-mail, воно повинно бути справжньою адресою пошти з символом @!");
+                    emailField.classList.add('error-input');
+                    return;
+                }
+            }
+            emailField.classList.remove('error-input');
+
+            document.getElementById('sum-dept').innerText = document.getElementById('department').value;
+            document.getElementById('sum-manager').innerText = document.getElementById('manager-fio').value;
+            document.getElementById('sum-approved').innerText = document.getElementById('manager-approved').value;
+
+            document.getElementById('sum-title').innerText = document.getElementById('job-title').value;
+            document.getElementById('sum-v-count').innerText = document.getElementById('vacancies-count').value || "1";
+            document.getElementById('sum-sub-count').innerText = document.getElementById('subordinates-count').value;
+            document.getElementById('sum-functions').innerText = document.getElementById('job-functions').value;
+            
+            document.getElementById('sum-reason').innerText = document.getElementById('search-reason').value;
+            document.getElementById('sum-prio').innerText = document.getElementById('priority-value').value;
+            document.getElementById('sum-sal-prob').innerText = document.getElementById('salary-probation').value + " ₴";
+            document.getElementById('sum-sal-after').innerText = document.getElementById('salary-after').value + " ₴";
+            document.getElementById('sum-prob-dur').innerText = document.getElementById('probation-duration').value;
+
+            const fromAge = document.getElementById('candidate-age-from').value;
+            const toAge = document.getElementById('candidate-age-to').value;
+            document.getElementById('sum-age').innerText = `від ${fromAge} до ${toAge} років`;
+            
+            document.getElementById('sum-edu').innerText = document.getElementById('candidate-education').value;
+            document.getElementById('sum-specialty').innerText = document.getElementById('candidate-specialty').value;
+            document.getElementById('sum-exp').innerText = document.getElementById('candidate-experience').value;
+            document.getElementById('sum-skills').innerText = document.getElementById('candidate-skills').value;
+            
+            const langRows = document.querySelectorAll('#languages-container > div');
+            let summaryLangLevels = [];
+            langRows.forEach(row => {
+                const langVal = row.querySelector('.lang-select-val').value;
+                const levelVal = row.querySelector('.level-select-val').value;
+                if(langVal && levelVal) {
+                    summaryLangLevels.push(`${langVal} (${levelVal.split(' - ')[0]})`);
+                }
+            });
+            document.getElementById('sum-lang-levels').innerText = summaryLangLevels.join(', ') || "Не вказано";
+            
+            document.getElementById('sum-pc').innerText = document.getElementById('candidate-pc').value;
+            
+            const customProgs = document.getElementById('custom-programs').value.trim();
+            document.getElementById('sum-programs').innerText = customProgs || "Не вказано";
+            
+            document.getElementById('sum-traits').innerText = document.getElementById('candidate-traits').value;
+
+            document.getElementById('sum-c-fio').innerText = document.getElementById('contact-fio').value;
+            document.getElementById('sum-c-contacts').innerText = document.getElementById('contact-phone').value + " | " + (document.getElementById('contact-email').value || "немає");
+
+            showPage('page-8');
+        }
+
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            el.addEventListener('input', () => el.classList.remove('error-input'));
+            el.addEventListener('change', () => el.classList.remove('error-input'));
+        });
+
+        function fakeSubmit() {
+            showPage('page-success');
+        }
+
+        function applyPhoneMask(e) {
+            let val = e.target.value.replace(/\D/g, ''); 
+            if (val.startsWith('38')) val = val.slice(2); 
+            if (val.length > 10) val = val.substring(0, 10);
+            let res = '38';
+            if (val.length > 0) res += ' ' + val.substring(0, 3);
+            if (val.length >= 4) res += ' ' + val.substring(3, 6);
+            if (val.length >= 7) res += ' ' + val.substring(6, 8);
+            if (val.length >= 9) res += ' ' + val.substring(8, 10);
+            e.target.value = res.trim();
+        }
+
+        document.getElementById('user-phone').addEventListener('input', applyPhoneMask);
+        document.getElementById('contact-phone').addEventListener('input', applyPhoneMask);
+
+        if(localStorage.getItem('fio')) {
+            document.getElementById('user-fio').value = localStorage.getItem('fio');
+            document.getElementById('user-phone').value = localStorage.getItem('phone');
+        }
+    </script>
+</body>
+</html>
