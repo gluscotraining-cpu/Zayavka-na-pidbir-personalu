@@ -843,6 +843,7 @@
                 if (!el.value.trim()) { flashError(el); ok = false; }
             });
             if (!ok) { alert("⚠️ Заповніть всі поля!"); return; }
+            if (!validatePhone(phoneEl)) return;
 
             const btn = document.getElementById('reg-submit-btn');
             btn.disabled = true; btn.innerHTML = 'Відправка...';
@@ -1027,6 +1028,7 @@
             const phone = document.getElementById('user-phone').value.trim();
             const role  = document.getElementById('user-role').value.trim();
             if(!fio || !phone || !role) { alert("⚠️ Будь ласка, заповніть усі поля!"); return; }
+            if (!validatePhone(document.getElementById('user-phone'))) return;
             localStorage.setItem('fio',   fio);
             localStorage.setItem('phone', phone);
             localStorage.setItem('role',  role);
@@ -1161,6 +1163,7 @@
             if(!document.getElementById('contact-fio').value.trim() || !document.getElementById('contact-phone').value.trim()) {
                 alert("⚠️ Вкажіть контактну особу та її номер телефону!"); return;
             }
+            if (!validatePhone(document.getElementById('contact-phone'))) return;
 
             const emailField = document.getElementById('contact-email');
             const emailValue = emailField.value.trim();
@@ -1347,6 +1350,18 @@
             if (val.length >= 7) res += ' ' + val.substring(6, 8);
             if (val.length >= 9) res += ' ' + val.substring(8, 10);
             e.target.value = res.trim();
+        }
+
+        // Перевірка: рівно 12 цифр (38 + 10)  напр. 38 050 716 66 62
+        function validatePhone(el) {
+            const digits = (el.value || '').replace(/\D/g, '');
+            if (digits.length !== 12) {
+                flashError(el);
+                alert('⚠️ Контактний номер телефону має містити 12 цифр.\nФормат: 38 050 716 66 62');
+                el.focus();
+                return false;
+            }
+            return true;
         }
 
         document.getElementById('user-phone').addEventListener('input', applyPhoneMask);
