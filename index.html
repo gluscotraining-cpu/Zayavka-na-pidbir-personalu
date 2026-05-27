@@ -227,14 +227,38 @@
                 <h2 class="text-gradient">Мої заявки</h2>
             </div>
 
-            <!-- Таби фільтрів -->
-            <div class="flex gap-2 overflow-x-auto pb-3 mb-4 custom-scroll" style="-webkit-overflow-scrolling:touch;">
-                <button class="req-tab active" id="tab-all"      onclick="filterRequests('all')">Всі <span class="req-tab-cnt" id="cnt-all">0</span></button>
-                <button class="req-tab"        id="tab-active"   onclick="filterRequests('active')">Активні <span class="req-tab-cnt" id="cnt-active">0</span></button>
-                <button class="req-tab"        id="tab-done"     onclick="filterRequests('done')">Виконані <span class="req-tab-cnt" id="cnt-done">0</span></button>
-                <button class="req-tab"        id="tab-cancel"   onclick="filterRequests('cancel')">Відхилені <span class="req-tab-cnt" id="cnt-cancel">0</span></button>
-                <button class="req-tab"        id="tab-rejected" onclick="filterRequests('rejected')">Відх. офісом <span class="req-tab-cnt" id="cnt-rejected">0</span></button>
-                <button class="req-tab"        id="tab-archive"  onclick="filterRequests('archive')">Архівні <span class="req-tab-cnt" id="cnt-archive">0</span></button>
+            <!-- Фільтри — сітка карточок -->
+            <div class="grid grid-cols-3 gap-2 mb-5">
+                <button id="tab-all"      onclick="filterRequests('all')"
+                    style="background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    <span id="cnt-all"      style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#94a3b8;">0</span>
+                    <span style="font-size:10px;color:#64748b;font-weight:600;">Всі</span>
+                </button>
+                <button id="tab-active"   onclick="filterRequests('active')"
+                    style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    <span id="cnt-active"  style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#60a5fa;">0</span>
+                    <span style="font-size:10px;color:#64748b;font-weight:600;">Активні</span>
+                </button>
+                <button id="tab-done"     onclick="filterRequests('done')"
+                    style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    <span id="cnt-done"    style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#34d399;">0</span>
+                    <span style="font-size:10px;color:#64748b;font-weight:600;">Виконані</span>
+                </button>
+                <button id="tab-cancel"   onclick="filterRequests('cancel')"
+                    style="background:rgba(100,116,139,0.08);border:1px solid rgba(100,116,139,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    <span id="cnt-cancel"  style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#94a3b8;">0</span>
+                    <span style="font-size:10px;color:#64748b;font-weight:600;">Скасовані</span>
+                </button>
+                <button id="tab-rejected" onclick="filterRequests('rejected')"
+                    style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    <span id="cnt-rejected" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f87171;">0</span>
+                    <span style="font-size:10px;color:#64748b;font-weight:600;text-align:center;line-height:1.2;">Відх.<br>офісом</span>
+                </button>
+                <button id="tab-archive"  onclick="filterRequests('archive')"
+                    style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    <span id="cnt-archive" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fbbf24;">0</span>
+                    <span style="font-size:10px;color:#64748b;font-weight:600;">Архівні</span>
+                </button>
             </div>
 
             <!-- Стан завантаження -->
@@ -1177,11 +1201,33 @@
             }
         }
 
+        const TAB_ACTIVE_STYLE = {
+            'all':      'box-shadow:0 0 0 2px rgba(148,163,184,0.5);background:rgba(148,163,184,0.15);',
+            'active':   'box-shadow:0 0 0 2px rgba(59,130,246,0.6);background:rgba(59,130,246,0.15);',
+            'done':     'box-shadow:0 0 0 2px rgba(16,185,129,0.6);background:rgba(16,185,129,0.15);',
+            'cancel':   'box-shadow:0 0 0 2px rgba(100,116,139,0.5);background:rgba(100,116,139,0.15);',
+            'rejected': 'box-shadow:0 0 0 2px rgba(239,68,68,0.5);background:rgba(239,68,68,0.15);',
+            'archive':  'box-shadow:0 0 0 2px rgba(245,158,11,0.5);background:rgba(245,158,11,0.15);',
+        };
+        const TAB_BASE_STYLE = {
+            'all':      'background:rgba(148,163,184,0.08);',
+            'active':   'background:rgba(59,130,246,0.08);',
+            'done':     'background:rgba(16,185,129,0.08);',
+            'cancel':   'background:rgba(100,116,139,0.08);',
+            'rejected': 'background:rgba(239,68,68,0.08);',
+            'archive':  'background:rgba(245,158,11,0.08);',
+        };
+
         function filterRequests(filter) {
             _curFilter = filter;
-            document.querySelectorAll('.req-tab').forEach(b => b.classList.remove('active'));
+            // Скидаємо всі кнопки
+            ['all','active','done','cancel','rejected','archive'].forEach(k => {
+                const btn = document.getElementById('tab-' + k);
+                if (btn) btn.style.cssText = btn.style.cssText.replace(/box-shadow:[^;]+;?/g,'').replace(/background:[^;]+;?/g,'') + TAB_BASE_STYLE[k];
+            });
+            // Виділяємо активну
             const tab = document.getElementById('tab-' + filter);
-            if (tab) tab.classList.add('active');
+            if (tab) tab.style.cssText = tab.style.cssText.replace(/box-shadow:[^;]+;?/g,'').replace(/background:[^;]+;?/g,'') + TAB_ACTIVE_STYLE[filter];
 
             const list = filter === 'all' ? _allRequests
                        : _allRequests.filter(o => _statusGroup(o.status) === filter);
