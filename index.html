@@ -2,58 +2,91 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HR Рекрутинг</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { background-color: #060a12; color: white; font-family: sans-serif; }
+        body { font-family: sans-serif; background-color: #060a12; color: #f8fafc; }
+        .page-section { display: none; }
         .glass { background: rgba(20, 20, 35, 0.45); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; }
+        .glass-input { background: rgba(10,10,20,0.6); border: 1px solid rgba(255,255,255,0.1); width: 100%; padding: 12px; border-radius: 12px; color: white; }
+        .btn-primary { width: 100%; background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; padding: 14px; border-radius: 14px; font-weight: 700; }
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top-color: #ec4899; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="p-6">
-    <div id="page-loading" class="text-center pt-20">Завантаження...</div>
-    
-    <div id="page-register" class="hidden glass mt-10">
-        <h2 class="text-xl font-bold mb-4">Реєстрація доступу</h2>
-        <input type="text" id="reg-fio" placeholder="Ваше ПІБ" class="w-full p-3 mb-3 bg-black/50 border border-white/10 rounded-lg">
-        <input type="tel" id="reg-phone" placeholder="Ваш телефон" class="w-full p-3 mb-4 bg-black/50 border border-white/10 rounded-lg">
-        <button onclick="doRegister()" class="w-full p-3 bg-pink-600 rounded-lg font-bold">Надіслати запит</button>
+    <div class="max-w-[390px] mx-auto">
+        <div id="page-loading" class="flex flex-col items-center justify-center h-[80vh]">
+            <div class="loader mb-4"></div><p>Перевірка доступу...</p>
+        </div>
+
+        <div id="page-blocked" class="hidden text-center pt-20 text-red-400 font-bold">Доступ заборонено</div>
+
+        <div id="page-main" class="hidden space-y-6">
+            <h1 class="text-2xl font-bold text-center text-pink-400">HR Рекрутинг</h1>
+            <div class="glass cursor-pointer" onclick="showPage('page-form')">
+                <h3 class="font-bold text-lg">Нова заявка</h3>
+            </div>
+        </div>
+
+        <div id="page-form" class="hidden space-y-4">
+            <h2 class="text-xl font-bold">Заповнення заявки</h2>
+            <input type="text" id="fio" class="glass-input" placeholder="Прізвище Ім'я">
+            <input type="tel" id="phone" class="glass-input" placeholder="Телефон">
+            <input type="text" id="department" class="glass-input" placeholder="Департамент/АЗК">
+            <input type="text" id="title" class="glass-input" placeholder="Назва посади">
+            <button onclick="submitAll()" class="btn-primary">Відправити в HR</button>
+        </div>
+
+        <div id="page-success" class="hidden text-center pt-20 text-green-400 font-bold">Заявку прийнято!</div>
     </div>
 
-    <div id="page-blocked" class="hidden text-center pt-20 text-red-400 font-bold">Доступ заборонено</div>
-
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        const TELEGRAM_ID = tg.initDataUnsafe.user.id;
-        const WEBHOOK_URL = "ВАШ_URL_APPS_SCRIPT_БІЛОГО_СПИСКУ";
+        const tg = window.Telegram?.WebApp;
+        if(tg) tg.expand();
+        const TELEGRAM_ID = tg?.initDataUnsafe?.user?.id || "12345678";
+        
+        const WHITE_LIST_URL = "https://script.google.com/macros/s/AKfycbyqrQzozxTXv-cWZAJEsnU1wGtnud8-uX2KuorLYPQVSPu9N1Ky5zdGGbmzG2CiSSr-Lg/exec";
+        const FORM_SUBMIT_URL = "https://script.google.com/macros/s/AKfycbzHIjSa5z4tgGL7X5KPxM439xSsEk72d2nayOLrfFkhnrOSQIjA8FlVF6tCBZxCL5fl/exec";
 
-        // Перевірка статусу при вході
-        fetch(WEBHOOK_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "check_access", telegram_id: TELEGRAM_ID }),
-            headers: { "Content-Type": "text/plain;charset=utf-8" }
-        })
-        .then(r => r.json())
-        .then(data => {
-            document.getElementById('page-loading').classList.add('hidden');
-            if (data.user_status === 'Активний') {
-                // Тут логіка відкриття форми HR
-            } else if (data.user_status === 'not_found') {
-                document.getElementById('page-register').classList.remove('hidden');
-            } else {
-                document.getElementById('page-blocked').classList.remove('hidden');
-            }
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch(WHITE_LIST_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "check_access", telegram_id: TELEGRAM_ID }),
+                headers: { "Content-Type": "text/plain;charset=utf-8" }
+            })
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('page-loading').classList.add('hidden');
+                if(data.user_status === 'Активний') {
+                    document.getElementById('page-main').classList.remove('hidden');
+                } else {
+                    document.getElementById('page-blocked').classList.remove('hidden');
+                }
+            });
         });
 
-        function doRegister() {
-            const fio = document.getElementById('reg-fio').value;
-            const phone = document.getElementById('reg-phone').value;
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "register_user", telegram_id: TELEGRAM_ID, fio: fio, phone: phone }),
+        function showPage(id) {
+            ['page-main', 'page-form', 'page-success'].forEach(p => document.getElementById(p).classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function submitAll() {
+            const payload = {
+                action: "create_request",
+                fio: document.getElementById('fio').value,
+                phone: document.getElementById('phone').value,
+                department: document.getElementById('department').value,
+                title: document.getElementById('title').value
+            };
+            fetch(FORM_SUBMIT_URL, { 
+                method: 'POST', 
+                body: JSON.stringify(payload), 
                 headers: { "Content-Type": "text/plain;charset=utf-8" }
-            }).then(() => alert("Запит надіслано! Очікуйте схвалення."));
+            }).then(() => showPage('page-success'));
         }
     </script>
 </body>
