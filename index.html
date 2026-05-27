@@ -253,6 +253,33 @@
             <div id="req-list" class="hidden space-y-3"></div>
         </div>
 
+        <!-- ══ СКАСУВАННЯ ЗАЯВКИ ══ -->
+        <div id="page-cancel-request" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-my-requests')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Скасування заявки</h2>
+            </div>
+            <div class="glass p-5 rounded-2xl mb-4 border border-red-500/15">
+                <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Заявка</div>
+                <div id="cancel-job-title" class="font-bold text-white text-base mb-1">—</div>
+                <div id="cancel-order-num" class="text-xs text-slate-500 font-mono">—</div>
+            </div>
+            <div class="glass p-5 rounded-2xl">
+                <div class="field-label" style="color:#f87171;">Причина скасування заявки?</div>
+                <textarea id="cancel-reason-text" placeholder="Вкажіть причину..." class="w-full p-4 rounded-xl glass-input text-[15px] h-28 resize-none mt-2"></textarea>
+                <button onclick="submitCancelRequest()" class="w-full mt-4 p-4 rounded-xl font-semibold text-white" style="background:rgba(239,68,68,0.7);">Скасувати заявку</button>
+            </div>
+        </div>
+
+        <!-- ══ ДЕТАЛІ ЗАЯВКИ ══ -->
+        <div id="page-request-detail" class="page-section hidden pb-10">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-my-requests')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Деталі заявки</h2>
+            </div>
+            <div id="detail-content" class="space-y-3"></div>
+        </div>
+
         <!-- ══ РЕЄСТРАЦІЯ (нового співробітника) ══ -->
         <div id="page-register" class="page-section hidden">
             <div class="text-center mb-6 pt-4">
@@ -708,7 +735,7 @@
 
                 <div class="flex items-center gap-3 mb-4">
                     <div class="p-2 bg-indigo-500/20 rounded-lg"><i data-lucide="file-check" class="text-indigo-400 w-5 h-5"></i></div>
-                    <span class="font-bold text-base text-indigo-300">Картка вакансії (Excel формат)</span>
+                    <span class="font-bold text-base text-indigo-300">Картка вакансії</span>
                 </div>
 
                 <div class="summary-section-title">Структура та Керівництво</div>
@@ -954,6 +981,8 @@
         const PAGE_BACK_MAP = {
             'page-2': 'page-1',
             'page-my-requests': 'page-1',
+            'page-cancel-request': 'page-my-requests',
+            'page-request-detail': 'page-my-requests',
             'page-3': 'page-1',
             'page-3b': 'page-3',
             'page-4': 'page-3b',
@@ -1165,23 +1194,152 @@
             }
             document.getElementById('req-empty').classList.add('hidden');
 
-            el.innerHTML = list.map(o => `
+            el.innerHTML = list.map(o => {
+                const isActive = ['нова','в роботі','в обробці','прийнята'].some(v => String(o.status||'').toLowerCase().includes(v));
+                const contactParts = String(o.contactInfo || '').split(' | ');
+                const contactFio   = contactParts[0] || '—';
+                const contactRest  = contactParts.slice(1).filter(Boolean).join(' | ') || '—';
+                return `
                 <div class="req-card">
-                    <div class="flex items-start justify-between gap-2 mb-2">
-                        <span class="font-semibold text-white text-[15px] leading-snug">${o.jobTitle || '—'}</span>
+                    <!-- Рядок 1: номер + статус -->
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-mono text-xs text-slate-400">№ ${o.orderId || '—'}</span>
                         ${_statusBadge(o.status)}
                     </div>
-                    <div class="text-xs text-slate-400 mb-3">${o.department || '—'}</div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-slate-500 font-mono">№ ${o.orderId || '—'}</span>
-                        <div class="flex items-center gap-2">
-                            ${o.priority === 'Терміновий' ? '<span style="font-size:10px;background:rgba(239,68,68,0.15);color:#f87171;padding:2px 8px;border-radius:99px;">🔴 Терміново</span>' : ''}
-                            <span class="text-xs text-slate-500">${o.date || ''}</span>
-                        </div>
+                    <!-- Рядок 2: дата -->
+                    <div class="text-xs text-slate-500 mb-3">${o.date || ''}</div>
+
+                    <!-- Інфо рядки -->
+                    ${o.stageOffice ? `<div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Стадія (Офіс)</span><span class="text-cyan-300 font-semibold">${o.stageOffice}</span></div>` : ''}
+                    ${o.commentOffice ? `<div class="flex justify-between text-xs mb-2"><span class="text-slate-400">Коментар офісу</span><span class="text-slate-200 text-right ml-2 flex-1">${o.commentOffice}</span></div>` : ''}
+
+                    <!-- Роздільник -->
+                    <div style="border-top:1px solid rgba(255,255,255,0.07);margin:10px 0;"></div>
+
+                    <div class="space-y-1 text-xs">
+                        <div class="flex justify-between"><span class="text-slate-400">Департамент/Відділ</span><span class="text-white text-right ml-2">${o.department || '—'}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Вакантна посада</span><span class="text-white font-semibold text-right ml-2">${o.jobTitle || '—'}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Куратор процесу</span><span class="text-white text-right ml-2">${contactFio}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Телефон / E-mail</span><span class="text-white text-right ml-2">${contactRest}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">ПІБ заявника</span><span class="text-white text-right ml-2">${o.requesterFio || '—'}</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Телефон заявника</span><span class="text-white text-right ml-2">${o.requesterPhone || '—'}</span></div>
                     </div>
-                </div>
-            `).join('');
+
+                    <!-- Кнопки -->
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="showRequestDetail('${o.orderId}')" style="flex:1;padding:10px;border-radius:12px;font-size:13px;font-weight:600;background:rgba(99,102,241,0.2);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3);">Докладно</button>
+                        ${isActive ? `<button onclick="startCancelRequest('${o.orderId}')" style="flex:1;padding:10px;border-radius:12px;font-size:13px;font-weight:600;background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25);">Скасувати</button>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
             el.classList.remove('hidden');
+        }
+
+        // ══ СКАСУВАННЯ ══════════════════════════════════
+        let _cancelOrderId = null;
+
+        function startCancelRequest(orderId) {
+            _cancelOrderId = orderId;
+            const req = _allRequests.find(o => String(o.orderId) === String(orderId));
+            document.getElementById('cancel-job-title').textContent = req?.jobTitle || '—';
+            document.getElementById('cancel-order-num').textContent = '№ ' + orderId;
+            document.getElementById('cancel-reason-text').value = '';
+            showPage('page-cancel-request');
+        }
+
+        function submitCancelRequest() {
+            const reason = document.getElementById('cancel-reason-text').value.trim();
+            if (!reason) { notify('⚠️ Вкажіть причину скасування!'); return; }
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'cancel_hr_request', orderId: _cancelOrderId, cancel_reason: reason }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    showPage('page-my-requests');
+                    loadMyRequests();
+                } else {
+                    notify('⚠️ Помилка: ' + (res.message || 'невідома'));
+                }
+            })
+            .catch(() => notify('⚠️ Помилка з\'єднання. Спробуйте ще раз.'));
+        }
+
+        // ══ ДОКЛАДНО ════════════════════════════════════
+        function _dsRow(label, val) {
+            if (!val) return '';
+            return `<div class="flex justify-between gap-3 text-sm py-2 border-b border-white/5 last:border-0">
+                <span class="text-slate-400 flex-shrink-0">${label}</span>
+                <span class="text-white text-right">${val}</span>
+            </div>`;
+        }
+        function _dsBlock(title, rows) {
+            const html = rows.map(([l,v]) => _dsRow(l,v)).join('');
+            if (!html) return '';
+            return `<div class="glass p-4 rounded-2xl">
+                <div class="text-[10px] font-bold text-pink-400 uppercase tracking-widest mb-3">${title}</div>
+                ${html}
+            </div>`;
+        }
+
+        function showRequestDetail(orderId) {
+            const o = _allRequests.find(r => String(r.orderId) === String(orderId));
+            if (!o) return;
+            const contactParts = String(o.contactInfo || '').split(' | ');
+            document.getElementById('detail-content').innerHTML = `
+                <div class="glass p-4 rounded-2xl flex items-center justify-between">
+                    <span class="font-mono text-sm text-slate-300">№ ${o.orderId}</span>
+                    ${_statusBadge(o.status)}
+                </div>
+                ${_dsBlock('Стан обробки', [
+                    ['Дата заявки', o.date],
+                    ['Статус', o.status],
+                    ['Стадія (Офіс)', o.stageOffice],
+                    ['Коментар офісу', o.commentOffice],
+                ])}
+                ${_dsBlock('Структура та керівництво', [
+                    ['Департамент/Відділ', o.department],
+                    ['Керівник', o.managerFio],
+                    ['Погоджено з керівником', o.managerApproved],
+                ])}
+                ${_dsBlock('Деталі посади', [
+                    ['Вакантна посада', o.jobTitle],
+                    ['Кількість вакансій', o.vacancies],
+                    ['Підлеглі', o.subordinates],
+                    ['Пріоритет', o.priority],
+                    ['Ключові функції', o.jobFunctions],
+                ])}
+                ${_dsBlock('Вимоги до кандидата', [
+                    ['Вік', o.age],
+                    ['Освіта / Спеціальність', o.education],
+                    ['Досвід роботи', o.experience],
+                    ['Знання та навички', o.skills],
+                    ['Знання мов', o.languages],
+                    ['Рівень ПК', o.pcLevel],
+                    ['Спеціалізовані програми', o.programs],
+                    ['Особисті якості', o.traits],
+                ])}
+                ${_dsBlock('Умови роботи', [
+                    ['ЗП на випробувальний', o.salaryProbation],
+                    ['ЗП після випробувального', o.salaryAfter],
+                    ['Тривалість випробування', o.probationDuration],
+                ])}
+                ${_dsBlock('Причина пошуку', [
+                    ['Причина', o.searchReason],
+                ])}
+                ${_dsBlock('Куратор та контакти', [
+                    ['ПІБ куратора', contactParts[0]],
+                    ['Телефон', contactParts[1]],
+                    ['E-mail', contactParts[2]],
+                    ['ПІБ заявника', o.requesterFio],
+                    ['Телефон заявника', o.requesterPhone],
+                ])}
+            `;
+            showPage('page-request-detail');
         }
 
         function saveProfile() {
