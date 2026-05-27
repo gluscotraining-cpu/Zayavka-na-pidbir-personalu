@@ -172,7 +172,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-white/5 active:scale-95" onclick="alert('Розділ заявок буде підключено на етапі таблиць!')">
+                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-white/5 active:scale-95" onclick="notify('Розділ заявок буде підключено на етапі таблиць!')">
                         <i data-lucide="layout-list" class="text-cyan-400 w-7 h-7"></i>
                         <span class="font-semibold text-sm text-slate-200">Мої заявки</span>
                     </div>
@@ -733,6 +733,12 @@
         const tg = window.Telegram?.WebApp;
         if(tg) { tg.expand(); try { tg.setHeaderColor('#060a12'); tg.setBackgroundColor('#060a12'); } catch(e){} }
 
+        // Повідомлення через Telegram API (без домену у шапці)
+        function notify(msg) {
+            if (tg?.showAlert) { tg.showAlert(msg); }
+            else { notify(msg); }
+        }
+
         // ══ ВСТАВТЕ СЮДИ URL вашого Google Apps Script ══
         const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwMaHkrRhSVEUOsQS9DA4eZqEsywJKG8N1yWRVUtRlOpuqx_NEh4LufSFSqUIszWmXH7g/exec';
 
@@ -842,7 +848,7 @@
             [fioEl, phoneEl, roleEl].forEach(el => {
                 if (!el.value.trim()) { flashError(el); ok = false; }
             });
-            if (!ok) { alert("⚠️ Заповніть всі поля!"); return; }
+            if (!ok) { notify("⚠️ Заповніть всі поля!"); return; }
             if (!validatePhone(phoneEl)) return;
 
             const btn = document.getElementById('reg-submit-btn');
@@ -866,18 +872,18 @@
                     localStorage.setItem('fio',   fioEl.value.trim());
                     localStorage.setItem('phone', phoneEl.value.trim());
                     localStorage.setItem('role',  roleEl.value.trim());
-                    alert("✅ Реєстрація успішна! Ласкаво просимо.");
+                    notify("✅ Реєстрація успішна! Ласкаво просимо.");
                     location.reload();
                 } else if (data.reason === 'fired') {
                     showDenied('fired');
                 } else {
-                    alert("❌ Помилка реєстрації: " + (data.message || 'невідома'));
+                    notify("❌ Помилка реєстрації: " + (data.message || 'невідома'));
                     btn.disabled = false; btn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> Зареєструватися';
                     lucide.createIcons();
                 }
             })
             .catch(() => {
-                alert("📡 Помилка з'єднання. Спробуйте ще раз.");
+                notify("📡 Помилка з'єднання. Спробуйте ще раз.");
                 btn.disabled = false; btn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> Зареєструватися';
                 lucide.createIcons();
             });
@@ -886,7 +892,7 @@
         // ══ Підтвердження телефону (новий пристрій) ══
         function submitVerification() {
             const phoneEl = document.getElementById('verify-phone');
-            if (!phoneEl.value.trim()) { flashError(phoneEl); alert("⚠️ Введіть номер телефону!"); return; }
+            if (!phoneEl.value.trim()) { flashError(phoneEl); notify("⚠️ Введіть номер телефону!"); return; }
 
             const btn = document.getElementById('verify-submit-btn');
             btn.disabled = true; btn.innerHTML = 'Перевірка...';
@@ -1027,7 +1033,7 @@
             const fio   = document.getElementById('user-fio').value.trim();
             const phone = document.getElementById('user-phone').value.trim();
             const role  = document.getElementById('user-role').value.trim();
-            if(!fio || !phone || !role) { alert("⚠️ Будь ласка, заповніть усі поля!"); return; }
+            if(!fio || !phone || !role) { notify("⚠️ Будь ласка, заповніть усі поля!"); return; }
             if (!validatePhone(document.getElementById('user-phone'))) return;
             localStorage.setItem('fio',   fio);
             localStorage.setItem('phone', phone);
@@ -1056,7 +1062,7 @@
                 { id: 'manager-fio',      check: el => el.value.trim() },
                 { id: 'manager-approved', check: el => el.value },
             ];
-            if (!markErrors(fields)) { alert("⚠️ Заповніть всі поля та оберіть варіант погодження!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Заповніть всі поля та оберіть варіант погодження!"); return; }
             showPage('page-3b');
         }
 
@@ -1067,7 +1073,7 @@
                 { id: 'subordinates-count',check: el => el.value },
                 { id: 'job-functions',     check: el => el.value.trim() },
             ];
-            if (!markErrors(fields)) { alert("⚠️ Вкажіть назву посади, кількість вакансій, підлеглих та обов'язки!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Вкажіть назву посади, кількість вакансій, підлеглих та обов'язки!"); return; }
             showPage('page-4');
         }
 
@@ -1079,7 +1085,7 @@
                 { id: 'salary-after',      check: el => el.value.trim() },
                 { id: 'probation-duration',check: el => el.value },
             ];
-            if (!markErrors(fields)) { alert("⚠️ Оберіть причину, пріоритет, термін та вкажіть умови заробітної плати!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Оберіть причину, пріоритет, термін та вкажіть умови заробітної плати!"); return; }
             showPage('page-5');
         }
 
@@ -1090,25 +1096,25 @@
                 { id: 'candidate-education', check: el => el.value },
                 { id: 'candidate-specialty', check: el => el.value.trim() },
             ];
-            if (!markErrors(fields)) { alert("⚠️ Оберіть вік, рівень освіти та вкажіть спеціальність!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Оберіть вік, рівень освіти та вкажіть спеціальність!"); return; }
             const fromAge = parseInt(document.getElementById('candidate-age-from').value);
             const toAge = parseInt(document.getElementById('candidate-age-to').value);
             if (toAge < fromAge) {
                 ['candidate-age-from','candidate-age-to'].forEach(id => flashError(document.getElementById(id)));
-                alert("⚠️ Помилка: Вік 'до' не може бути меншим за вік 'від'!"); return;
+                notify("⚠️ Помилка: Вік 'до' не може бути меншим за вік 'від'!"); return;
             }
             showPage('page-5b');
         }
 
         function goToPage5c() {
             const fields = [{ id: 'candidate-experience', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { alert("⚠️ Заповніть вимоги щодо досвіду роботи!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Заповніть вимоги щодо досвіду роботи!"); return; }
             showPage('page-5c');
         }
 
         function goToPage6() {
             const fields = [{ id: 'candidate-skills', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { alert("⚠️ Заповніть поле професійних знань та вмінь!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Заповніть поле професійних знань та вмінь!"); return; }
             showPage('page-6');
         }
 
@@ -1128,26 +1134,26 @@
             });
 
             if(count === 0) {
-                alert("⚠️ Додайте хоча б одну мову та рівень володіння через кнопку + !"); return;
+                notify("⚠️ Додайте хоча б одну мову та рівень володіння через кнопку + !"); return;
             }
             if(!valid) {
-                alert("⚠️ Будь ласка, заповніть обрані мови та рівні або видаліть порожній рядок!"); return;
+                notify("⚠️ Будь ласка, заповніть обрані мови та рівні або видаліть порожній рядок!"); return;
             }
 
             const pcEl = document.getElementById('candidate-pc');
             if(!pcEl.value) {
                 flashError(pcEl);
-                alert("⚠️ Оберіть рівень володіння ПК!"); return;
+                notify("⚠️ Оберіть рівень володіння ПК!"); return;
             }
 
             const needProgEl = document.getElementById('need-programs');
             if(!needProgEl.value) {
                 flashError(needProgEl);
-                alert("⚠️ Вкажіть чи потрібні спеціалізовані програми!"); return;
+                notify("⚠️ Вкажіть чи потрібні спеціалізовані програми!"); return;
             }
             if(needProgEl.value === 'yes' && !document.getElementById('custom-programs').value.trim()) {
                 flashError(document.getElementById('custom-programs'));
-                alert("⚠️ Вкажіть назви спеціалізованих програм!"); return;
+                notify("⚠️ Вкажіть назви спеціалізованих програм!"); return;
             }
 
             showPage('page-6b');
@@ -1155,13 +1161,13 @@
 
         function goToPage7() {
             const fields = [{ id: 'candidate-traits', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { alert("⚠️ Опишіть особисті якості кандидата!"); return; }
+            if (!markErrors(fields)) { notify("⚠️ Опишіть особисті якості кандидата!"); return; }
             showPage('page-7');
         }
 
         function renderSummary() {
             if(!document.getElementById('contact-fio').value.trim() || !document.getElementById('contact-phone').value.trim()) {
-                alert("⚠️ Вкажіть контактну особу та її номер телефону!"); return;
+                notify("⚠️ Вкажіть контактну особу та її номер телефону!"); return;
             }
             if (!validatePhone(document.getElementById('contact-phone'))) return;
 
@@ -1170,7 +1176,7 @@
             if (emailValue !== "") {
                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailPattern.test(emailValue)) {
-                    alert("⚠️ Помилка: Якщо ви заповнюєте поле E-mail, воно повинно бути справжньою адресою пошти з символом @ та доменом (наприклад: name@company.com)!");
+                    notify("⚠️ Помилка: Якщо ви заповнюєте поле E-mail, воно повинно бути справжньою адресою пошти з символом @ та доменом (наприклад: name@company.com)!");
                     emailField.classList.add('error-input');
                     return;
                 }
@@ -1357,7 +1363,7 @@
             const digits = (el.value || '').replace(/\D/g, '');
             if (digits.length !== 12) {
                 flashError(el);
-                alert('⚠️ Контактний номер телефону має містити 12 цифр.\nФормат: 38 050 716 66 62');
+                notify('Контактний номер телефону має містити 12 цифр, перевірте правильність введення даних.');
                 el.focus();
                 return false;
             }
