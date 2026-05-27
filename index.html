@@ -117,6 +117,20 @@
     <div class="blob blob-purple"></div>
     <div class="blob blob-cyan"></div>
 
+    <!-- ══ SPLASH: перевірка доступу ══ -->
+    <div id="page-splash" style="position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#060a12;gap:16px;">
+        <div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(255,255,255,0.05);border-top-color:#ec4899;animation:spin 0.9s linear infinite;"></div>
+        <div style="font-size:13px;color:#64748b;">Перевірка доступу...</div>
+    </div>
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    <!-- ══ ДОСТУП ЗАБОРОНЕНО ══ -->
+    <div id="page-denied" class="hidden" style="position:fixed;inset:0;z-index:998;display:none;flex-direction:column;align-items:center;justify-content:center;background:#060a12;padding:32px;text-align:center;">
+        <div style="width:90px;height:90px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:24px;box-shadow:0 0 40px rgba(239,68,68,0.2);">🚫</div>
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f87171;margin-bottom:8px;">Доступ заборонено</div>
+        <div id="denied-reason" style="font-size:14px;color:#64748b;line-height:1.6;max-width:280px;"></div>
+    </div>
+
     <div class="page-wrap">
 
         <div id="page-1" class="page-section flex flex-col items-center pt-8 animate-fade">
@@ -164,13 +178,66 @@
                 <p class="text-sm text-slate-400 mb-6 leading-relaxed">Вкажіть ваші дані для швидкого автозаповнення в майбутньому.</p>
                 <div class="mb-5">
                     <div class="field-label"><i data-lucide="user" class="w-4 h-4 text-cyan-400"></i> Ваше ПІБ</div>
-                    <input type="text" id="user-fio" placeholder="Прізвище Ім'я" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                    <input type="text" id="user-fio" placeholder="Прізвище Ім'я" class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="lettersOnly(this)">
                 </div>
-                <div class="mb-8">
+                <div class="mb-5">
                     <div class="field-label"><i data-lucide="phone" class="w-4 h-4 text-pink-400"></i> Номер телефону</div>
                     <input type="tel" id="user-phone" placeholder="38 0__ ___ __ __" class="w-full p-4 rounded-xl glass-input text-[15px]">
                 </div>
-                <button onclick="saveProfile()" class="btn-primary">Зберегти та продовжити</button>
+                <div class="mb-8">
+                    <div class="field-label"><i data-lucide="briefcase" class="w-4 h-4 text-purple-400"></i> Роль / Посада</div>
+                    <input type="text" id="user-role" placeholder="Напр: HR-менеджер, Керівник АЗК..." class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="lettersOnly(this)">
+                </div>
+                <button onclick="saveProfile()" class="btn-primary">Зберегти</button>
+            </div>
+        </div>
+
+        <!-- ══ РЕЄСТРАЦІЯ (нового співробітника) ══ -->
+        <div id="page-register" class="page-section hidden">
+            <div class="text-center mb-6 pt-4">
+                <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-tr from-pink-600/20 to-cyan-500/20 rounded-2xl flex items-center justify-center border border-white/10">
+                    <i data-lucide="user-plus" class="w-10 h-10 text-pink-400"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gradient mb-2">Реєстрація</h1>
+                <p class="text-xs text-slate-400 max-w-[280px] mx-auto leading-relaxed">Це ваш перший вхід. Заповніть дані для додавання до списку співробітників.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <div class="mb-5">
+                    <div class="field-label"><i data-lucide="user" class="w-4 h-4 text-cyan-400"></i> ПІБ</div>
+                    <input type="text" id="reg-fio" placeholder="Прізвище Ім'я По-батькові" class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="lettersOnly(this)">
+                </div>
+                <div class="mb-5">
+                    <div class="field-label"><i data-lucide="phone" class="w-4 h-4 text-pink-400"></i> Номер телефону</div>
+                    <input type="tel" id="reg-phone" placeholder="38 0__ ___ __ __" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <div class="mb-8">
+                    <div class="field-label"><i data-lucide="briefcase" class="w-4 h-4 text-purple-400"></i> Роль / Посада</div>
+                    <input type="text" id="reg-role" placeholder="Напр: HR-менеджер, Керівник АЗК..." class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="lettersOnly(this)">
+                </div>
+                <button onclick="submitRegistration()" id="reg-submit-btn" class="btn-primary">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Зареєструватися
+                </button>
+                <p class="text-[10px] text-slate-500 text-center mt-4 leading-relaxed">Ваш Telegram ID буде автоматично прив'язаний до облікового запису</p>
+            </div>
+        </div>
+
+        <!-- ══ ПІДТВЕРДЖЕННЯ ТЕЛЕФОНУ (на іншому пристрої) ══ -->
+        <div id="page-verify" class="page-section hidden">
+            <div class="text-center mb-6 pt-8">
+                <div class="w-20 h-20 mx-auto mb-4 bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-10 h-10 text-amber-400"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-amber-400 mb-2">Підтвердіть телефон</h1>
+                <p class="text-xs text-slate-400 max-w-[280px] mx-auto leading-relaxed">Ми знайшли вас у системі. Введіть номер телефону, з яким ви реєструвалися.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <div class="mb-6">
+                    <div class="field-label"><i data-lucide="phone" class="w-4 h-4 text-amber-400"></i> Номер телефону</div>
+                    <input type="tel" id="verify-phone" placeholder="38 0__ ___ __ __" class="w-full p-4 rounded-xl glass-input text-[15px]">
+                </div>
+                <button onclick="submitVerification()" id="verify-submit-btn" class="btn-primary">
+                    <i data-lucide="lock-open" class="w-5 h-5"></i> Підтвердити
+                </button>
             </div>
         </div>
 
@@ -635,9 +702,13 @@
         </div>
 
         <div id="page-success" class="page-section hidden pt-16 text-center">
-            <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl shadow-emerald-500/5">✅</div>
-            <h2 class="text-2xl font-bold text-emerald-400 mb-2">Заявку сформовано!</h2>
-            <p class="text-sm text-slate-400 mb-8 max-w-xs mx-auto leading-relaxed">Всі стовпчики згідно з регламентом успішно оброблені. Заявка готова для передачі в Google Таблицю.</p>
+            <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl shadow-emerald-500/5 animate-pop">✅</div>
+            <h2 class="text-2xl font-bold text-emerald-400 mb-2">Заявку надіслано!</h2>
+            <p class="text-sm text-slate-400 mb-6 max-w-xs mx-auto leading-relaxed">HR-відділ отримав вашу заявку на підбір персоналу та розпочне опрацювання.</p>
+            <div style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:16px;padding:14px;margin-bottom:24px;">
+                <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Номер заявки</div>
+                <div id="hr-order-id" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#34d399;">—</div>
+            </div>
             <button onclick="showPage('page-1')" class="w-full bg-blue-600 p-4 rounded-xl font-semibold text-white">На головну сторінку</button>
         </div>
 
@@ -645,7 +716,172 @@
 
     <script>
         const tg = window.Telegram?.WebApp;
-        if(tg) { tg.expand(); }
+        if(tg) { tg.expand(); try { tg.setHeaderColor('#060a12'); tg.setBackgroundColor('#060a12'); } catch(e){} }
+
+        // ══ ВСТАВТЕ СЮДИ URL вашого Google Apps Script ══
+        const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwMaHkrRhSVEUOsQS9DA4eZqEsywJKG8N1yWRVUtRlOpuqx_NEh4LufSFSqUIszWmXH7g/exec';
+
+        const TELEGRAM_ID = tg?.initDataUnsafe?.user?.id || 'BROWSER_TEST_MODE';
+
+        // ══ Перевірка доступу за Telegram ID + телефон ══
+        function checkAccess() {
+            // У браузері без Telegram — пропускаємо перевірку
+            if (TELEGRAM_ID === 'BROWSER_TEST_MODE') {
+                hideSplash(); return;
+            }
+
+            const phone = localStorage.getItem('phone') || '';
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action:      'check_whitelist',
+                    telegram_id: TELEGRAM_ID,
+                    phone:       phone
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            })
+            .then(r => r.json())
+            .then(data => {
+                hideSplash();
+
+                if (data.allowed) {
+                    // Зберігаємо актуальні дані з білого списку в локальний кеш
+                    if (data.fio)   localStorage.setItem('fio', data.fio);
+                    if (data.phone) localStorage.setItem('phone', data.phone);
+                    if (data.role)  localStorage.setItem('role', data.role);
+                    return; // показуємо звичайний інтерфейс
+                }
+
+                switch (data.reason) {
+                    case 'not_registered':
+                        // Перший вхід — показуємо реєстрацію
+                        showOnlyPage('page-register');
+                        break;
+                    case 'phone_required':
+                        // На цьому пристрої немає телефону — попросимо ввести
+                        showOnlyPage('page-verify');
+                        break;
+                    case 'phone_mismatch':
+                        showDenied('phone_mismatch');
+                        break;
+                    case 'fired':
+                        showDenied('fired');
+                        break;
+                    default:
+                        showDenied(data.reason || 'unknown');
+                }
+            })
+            .catch(() => hideSplash());
+        }
+
+        function hideSplash() {
+            document.getElementById('page-splash').style.display = 'none';
+        }
+
+        function showOnlyPage(id) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            lucide.createIcons();
+            initPhoneMaskOn(id);
+        }
+
+        function showDenied(reason) {
+            document.getElementById('page-splash').style.display = 'none';
+            document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+            const deniedEl = document.getElementById('page-denied');
+            deniedEl.style.display = 'flex';
+
+            const messages = {
+                'fired':           '❌ Ваш обліковий запис деактивовано.\nЗверніться до HR-відділу.',
+                'phone_mismatch':  '⚠️ Номер телефону не співпадає з реєстраційним.\nДоступ заблоковано.',
+                'no_id':           'Не вдалося отримати Telegram ID.\nВідкрийте додаток через Telegram.',
+                'sheet_not_found': 'Помилка конфігурації.\nЗверніться до адміністратора.',
+            };
+            document.getElementById('denied-reason').textContent =
+                messages[reason] || 'Доступ до цього розділу обмежений.';
+        }
+
+        // Маска телефону для нових полів (reg-phone, verify-phone)
+        function initPhoneMaskOn(pageId) {
+            const ids = pageId === 'page-register' ? ['reg-phone']
+                      : pageId === 'page-verify'   ? ['verify-phone']
+                      : [];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && !el._maskInited) {
+                    el.addEventListener('input', applyPhoneMask);
+                    el._maskInited = true;
+                }
+            });
+        }
+
+        // ══ Реєстрація нового співробітника ══
+        function submitRegistration() {
+            const fioEl   = document.getElementById('reg-fio');
+            const phoneEl = document.getElementById('reg-phone');
+            const roleEl  = document.getElementById('reg-role');
+
+            let ok = true;
+            [fioEl, phoneEl, roleEl].forEach(el => {
+                if (!el.value.trim()) { flashError(el); ok = false; }
+            });
+            if (!ok) { alert("⚠️ Заповніть всі поля!"); return; }
+
+            const btn = document.getElementById('reg-submit-btn');
+            btn.disabled = true; btn.innerHTML = 'Відправка...';
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action:      'register_employee',
+                    telegram_id: TELEGRAM_ID,
+                    fio:         fioEl.value.trim(),
+                    phone:       phoneEl.value.trim(),
+                    role:        roleEl.value.trim()
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    localStorage.setItem('fio',   fioEl.value.trim());
+                    localStorage.setItem('phone', phoneEl.value.trim());
+                    localStorage.setItem('role',  roleEl.value.trim());
+                    alert("✅ Реєстрація успішна! Ласкаво просимо.");
+                    location.reload();
+                } else if (data.reason === 'fired') {
+                    showDenied('fired');
+                } else {
+                    alert("❌ Помилка реєстрації: " + (data.message || 'невідома'));
+                    btn.disabled = false; btn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> Зареєструватися';
+                    lucide.createIcons();
+                }
+            })
+            .catch(() => {
+                alert("📡 Помилка з'єднання. Спробуйте ще раз.");
+                btn.disabled = false; btn.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i> Зареєструватися';
+                lucide.createIcons();
+            });
+        }
+
+        // ══ Підтвердження телефону (новий пристрій) ══
+        function submitVerification() {
+            const phoneEl = document.getElementById('verify-phone');
+            if (!phoneEl.value.trim()) { flashError(phoneEl); alert("⚠️ Введіть номер телефону!"); return; }
+
+            const btn = document.getElementById('verify-submit-btn');
+            btn.disabled = true; btn.innerHTML = 'Перевірка...';
+
+            // Зберігаємо телефон та перезапускаємо перевірку
+            localStorage.setItem('phone', phoneEl.value.trim());
+            location.reload();
+        }
+
+        // Запускаємо перевірку одразу
+        checkAccess();
 
         const PAGE_BACK_MAP = {
             'page-2': 'page-1',
@@ -744,12 +980,29 @@
         }
 
         function saveProfile() {
-            const fio = document.getElementById('user-fio').value.trim();
+            const fio   = document.getElementById('user-fio').value.trim();
             const phone = document.getElementById('user-phone').value.trim();
-            if(!fio || !phone) { alert("⚠️ Будь ласка, заповніть поля!"); return; }
-            localStorage.setItem('fio', fio);
+            const role  = document.getElementById('user-role').value.trim();
+            if(!fio || !phone || !role) { alert("⚠️ Будь ласка, заповніть усі поля!"); return; }
+            localStorage.setItem('fio',   fio);
             localStorage.setItem('phone', phone);
-            showPage('page-3');
+            localStorage.setItem('role',  role);
+
+            // Синхронізуємо дані з білим списком (оновлюємо рядок)
+            if (TELEGRAM_ID !== 'BROWSER_TEST_MODE') {
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'update_employee',
+                        telegram_id: TELEGRAM_ID,
+                        fio, phone, role
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow'
+                }).catch(() => {});
+            }
+
+            showPage('page-1');
         }
 
         function goToPage3b() {
@@ -974,7 +1227,71 @@
         });
 
         function fakeSubmit() {
-            showPage('page-success');
+            const sendBtn = document.querySelector('#page-8 button.bg-blue-600');
+            if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Відправка...'; }
+
+            // Збираємо мови
+            const langRows = document.querySelectorAll('#languages-container > div');
+            const langs = [];
+            langRows.forEach(row => {
+                const l = row.querySelector('.lang-select-val')?.value;
+                const lv = row.querySelector('.level-select-val')?.value;
+                if (l && lv) langs.push(`${l} — ${lv}`);
+            });
+
+            const needProgs = document.getElementById('need-programs').value;
+            const programs  = needProgs === 'yes' ? document.getElementById('custom-programs').value.trim() : 'Не потрібні';
+
+            const payload = {
+                action:             'create_hr_request',
+                telegram_id:        TELEGRAM_ID,
+                requester_fio:      localStorage.getItem('fio') || '',
+                requester_phone:    localStorage.getItem('phone') || '',
+                department:         document.getElementById('department').value,
+                manager_fio:        document.getElementById('manager-fio').value,
+                manager_approved:   document.getElementById('manager-approved').value,
+                job_title:          document.getElementById('job-title').value,
+                vacancies_count:    document.getElementById('vacancies-count').value,
+                subordinates_count: document.getElementById('subordinates-count').value,
+                job_functions:      document.getElementById('job-functions').value,
+                search_reason:      document.getElementById('search-reason').value,
+                priority:           document.getElementById('priority').value,
+                salary_probation:   document.getElementById('salary-probation').value,
+                salary_after:       document.getElementById('salary-after').value,
+                probation_duration: document.getElementById('probation-duration').value,
+                age_from:           document.getElementById('candidate-age-from').value,
+                age_to:             document.getElementById('candidate-age-to').value,
+                education:          document.getElementById('candidate-education').value,
+                specialty:          document.getElementById('candidate-specialty').value,
+                experience:         document.getElementById('candidate-experience').value,
+                skills:             document.getElementById('candidate-skills').value,
+                languages:          langs.join('; '),
+                pc_level:           document.getElementById('candidate-pc').value,
+                programs:           programs,
+                traits:             document.getElementById('candidate-traits').value,
+                contact_fio:        document.getElementById('contact-fio').value,
+                contact_phone:      document.getElementById('contact-phone').value,
+                contact_email:      document.getElementById('contact-email').value,
+            };
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            })
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('hr-order-id').textContent = '№ ' + (data.orderId || '—');
+                showPage('page-success');
+            })
+            .catch(() => {
+                document.getElementById('hr-order-id').textContent = '—';
+                showPage('page-success');
+            })
+            .finally(() => {
+                if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Надіслати в HR'; }
+            });
         }
 
         function applyPhoneMask(e) {
@@ -993,8 +1310,9 @@
         document.getElementById('contact-phone').addEventListener('input', applyPhoneMask);
 
         if(localStorage.getItem('fio')) {
-            document.getElementById('user-fio').value = localStorage.getItem('fio');
-            document.getElementById('user-phone').value = localStorage.getItem('phone');
+            document.getElementById('user-fio').value   = localStorage.getItem('fio') || '';
+            document.getElementById('user-phone').value = localStorage.getItem('phone') || '';
+            document.getElementById('user-role').value  = localStorage.getItem('role') || '';
         }
     </script>
 </body>
