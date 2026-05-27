@@ -1201,15 +1201,18 @@
                 const contactRest  = contactParts.slice(1).filter(Boolean).join(' | ') || '—';
                 return `
                 <div class="req-card">
-                    <!-- Рядок 1: номер + статус -->
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-mono text-xs text-slate-400">№ ${o.orderId || '—'}</span>
-                        ${_statusBadge(o.status)}
+                    <!-- Шапка картки -->
+                    <div style="background:linear-gradient(120deg,rgba(236,72,153,0.13),rgba(168,85,247,0.09));border-radius:12px;padding:12px 14px;margin:-14px -16px 14px;border-bottom:1px solid rgba(255,255,255,0.06);">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(90deg,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.3px;">№ ${o.orderId || '—'}</div>
+                                <div style="font-size:11px;color:#64748b;margin-top:3px;">${o.date || ''}</div>
+                            </div>
+                            ${_statusBadge(o.status)}
+                        </div>
                     </div>
-                    <!-- Рядок 2: дата -->
-                    <div class="text-xs text-slate-500 mb-3">${o.date || ''}</div>
 
-                    <!-- Інфо рядки -->
+                    <!-- Інфо рядки (офіс) -->
                     ${o.stageOffice ? `<div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Стадія (Офіс)</span><span class="text-cyan-300 font-semibold">${o.stageOffice}</span></div>` : ''}
                     ${o.commentOffice ? `<div class="flex justify-between text-xs mb-2"><span class="text-slate-400">Коментар офісу</span><span class="text-slate-200 text-right ml-2 flex-1">${o.commentOffice}</span></div>` : ''}
 
