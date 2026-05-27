@@ -27,7 +27,7 @@
 
         @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(30px, 50px) scale(1.1); } }
 
-        .page-wrap { width: 100%; max-width: 390px; position: relative; z-index: 1; }
+        .page-wrap { width: 100%; max-width: 390px; position: relative; z-index: 1; margin: 0 auto; }
 
         .glass {
             background: rgba(20, 20, 35, 0.45);
@@ -80,8 +80,8 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(236,72,153,0.3); border-radius: 99px; }
 
-        .loader { border: 3px solid rgba(255,255,255,0.1); border-top-color: #ec4899; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        .loader-sm { border-width: 2px; width: 20px; height: 20px; }
+        .loader-ring { border: 4px solid rgba(255,255,255,0.1); border-top-color: #ec4899; border-radius: 50%; width: 48px; height: 48px; animation: spin 1s linear infinite; }
+        .loader-sm { border: 2px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -94,7 +94,7 @@
     <div class="page-wrap">
 
         <div id="page-loading" class="page-section flex flex-col items-center justify-center h-[80vh] animate-fade">
-            <div class="loader mb-4"></div>
+            <div class="loader-ring mb-4"></div>
             <p class="text-slate-400 text-sm font-semibold tracking-wider uppercase">Перевірка доступу...</p>
         </div>
 
@@ -129,7 +129,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all active:scale-95" onclick="alert('Розділ заявок буде підключено на наступному етапі!')">
+                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all active:scale-95" onclick="alert('Розділ заявок буде підключено на етапі таблиць!')">
                         <i data-lucide="layout-list" class="text-cyan-400 w-7 h-7"></i>
                         <span class="font-semibold text-sm text-slate-200">Мої заявки</span>
                     </div>
@@ -241,9 +241,10 @@
         </div>
 
         <div id="page-success" class="page-section hidden pt-16 text-center">
-            <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">✅</div>
-            <h2 class="text-2xl font-bold text-emerald-400 mb-2">Заявку прийнято!</h2>
-            <button onclick="showPage('page-1')" class="w-full bg-blue-600 p-4 rounded-xl font-semibold text-white mt-8">На головну</button>
+            <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl shadow-emerald-500/5">✅</div>
+            <h2 class="text-2xl font-bold text-emerald-400 mb-2">Заявку сформовано!</h2>
+            <p class="text-sm text-slate-400 mb-8 max-w-xs mx-auto leading-relaxed">Всі стовпчики згідно з регламентом успішно оброблені. Заявка готова для передачі в Google Таблицю.</p>
+            <button onclick="showPage('page-1')" class="w-full bg-blue-600 p-4 rounded-xl font-semibold text-white">На головну сторінку</button>
         </div>
 
     </div>
@@ -311,7 +312,7 @@
 
         function submitFormData() {
             const btn = document.getElementById('btn-submit');
-            btn.innerHTML = '<div class="loader loader-sm"></div> Відправка...'; btn.disabled = true;
+            btn.innerHTML = '<div class="loader-sm"></div> Відправка...'; btn.disabled = true;
 
             const payload = {
                 action: "create_request",
