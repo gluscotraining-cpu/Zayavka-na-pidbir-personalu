@@ -992,7 +992,32 @@
             lucide.createIcons();
         }
 
+        function resetForm() {
+            // Очищаємо всі текстові поля та textarea
+            ['department', 'manager-fio', 'job-title', 'vacancies-count',
+             'job-functions', 'salary-probation', 'salary-after',
+             'candidate-specialty', 'candidate-experience', 'candidate-skills',
+             'candidate-traits', 'contact-fio', 'contact-phone', 'contact-email',
+             'custom-programs'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            // Скидаємо всі select-поля на порожній вибір
+            ['manager-approved', 'subordinates-count', 'search-reason', 'priority',
+             'probation-duration', 'candidate-age-from', 'candidate-age-to',
+             'candidate-education', 'candidate-pc', 'need-programs'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.selectedIndex = 0;
+            });
+            // Очищаємо мови і ставимо дефолт
+            document.getElementById('languages-container').innerHTML = '';
+            addLanguageRow('Українська', 'C2');
+            // Ховаємо поле програм
+            document.getElementById('custom-programs-wrap').classList.add('hidden');
+        }
+
         function startNewRequest() {
+            resetForm();
             if (localStorage.getItem('fio')) showPage('page-3');
             else showPage('page-2');
         }
