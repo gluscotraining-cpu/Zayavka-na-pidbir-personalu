@@ -1298,6 +1298,7 @@
                 ${_dsBlock('Стан обробки', [
                     ['Дата заявки', o.date],
                     ['Статус', o.status],
+                    ['Причина пошуку', o.searchReason],
                     ['Стадія (Офіс)', o.stageOffice],
                     ['Коментар офісу', o.commentOffice],
                 ])}
@@ -1327,9 +1328,6 @@
                     ['ЗП на випробувальний', o.salaryProbation],
                     ['ЗП після випробувального', o.salaryAfter],
                     ['Тривалість випробування', o.probationDuration],
-                ])}
-                ${_dsBlock('Причина пошуку', [
-                    ['Причина', o.searchReason],
                 ])}
                 ${_dsBlock('Куратор та контакти', [
                     ['ПІБ куратора', contactParts[0]],
