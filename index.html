@@ -110,6 +110,18 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(236,72,153,0.3); border-radius: 99px; }
 
+        .req-tab { flex-shrink:0; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .req-tab.active { color: #f8fafc; background: rgba(236,72,153,0.2); border-color: rgba(236,72,153,0.4); }
+        .req-tab-cnt { background: rgba(255,255,255,0.15); border-radius: 99px; padding: 1px 6px; font-size: 10px; font-weight: 700; }
+        .req-tab.active .req-tab-cnt { background: rgba(236,72,153,0.5); }
+        .req-card { background: rgba(15,15,28,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 14px 16px; }
+        .req-status { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; }
+        .req-status-active   { background:rgba(59,130,246,0.15);  color:#60a5fa; }
+        .req-status-done     { background:rgba(16,185,129,0.15); color:#34d399; }
+        .req-status-cancel   { background:rgba(100,116,139,0.2);  color:#94a3b8; }
+        .req-status-rejected { background:rgba(239,68,68,0.15);   color:#f87171; }
+        .req-status-archive  { background:rgba(245,158,11,0.15);  color:#fbbf24; }
+
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes pulse-ring { 0% { transform: scale(0.92); opacity: 0.7; } 70% { transform: scale(1.12); opacity: 0; } 100% { transform: scale(1.12); opacity: 0; } }
     </style>
@@ -172,9 +184,10 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-white/5 active:scale-95" onclick="notify('Розділ заявок буде підключено на етапі таблиць!')">
+                    <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-white/5 active:scale-95 relative" onclick="showMyRequests()">
                         <i data-lucide="layout-list" class="text-cyan-400 w-7 h-7"></i>
                         <span class="font-semibold text-sm text-slate-200">Мої заявки</span>
+                        <span id="badge-active" class="hidden" style="position:absolute;top:8px;right:8px;min-width:20px;height:20px;background:#ec4899;color:#fff;font-size:10px;font-weight:800;border-radius:99px;display:none;align-items:center;justify-content:center;padding:0 5px;">0</span>
                     </div>
                     <div class="glass p-4 rounded-2xl flex flex-col items-center gap-3 cursor-pointer transition-all hover:bg-white/5 active:scale-95" onclick="showPage('page-2')">
                         <i data-lucide="fingerprint" class="text-purple-400 w-7 h-7"></i>
@@ -205,6 +218,39 @@
                 </div>
                 <button onclick="saveProfile()" class="btn-primary">Зберегти</button>
             </div>
+        </div>
+
+        <!-- ══ МОЇ ЗАЯВКИ ══ -->
+        <div id="page-my-requests" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-1')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Мої заявки</h2>
+            </div>
+
+            <!-- Таби фільтрів -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-4 custom-scroll" style="-webkit-overflow-scrolling:touch;">
+                <button class="req-tab active" id="tab-all"      onclick="filterRequests('all')">Всі <span class="req-tab-cnt" id="cnt-all">0</span></button>
+                <button class="req-tab"        id="tab-active"   onclick="filterRequests('active')">Активні <span class="req-tab-cnt" id="cnt-active">0</span></button>
+                <button class="req-tab"        id="tab-done"     onclick="filterRequests('done')">Виконані <span class="req-tab-cnt" id="cnt-done">0</span></button>
+                <button class="req-tab"        id="tab-cancel"   onclick="filterRequests('cancel')">Відхилені <span class="req-tab-cnt" id="cnt-cancel">0</span></button>
+                <button class="req-tab"        id="tab-rejected" onclick="filterRequests('rejected')">Відх. офісом <span class="req-tab-cnt" id="cnt-rejected">0</span></button>
+                <button class="req-tab"        id="tab-archive"  onclick="filterRequests('archive')">Архівні <span class="req-tab-cnt" id="cnt-archive">0</span></button>
+            </div>
+
+            <!-- Стан завантаження -->
+            <div id="req-loading" class="text-center py-12">
+                <div style="width:36px;height:36px;border-radius:50%;border:3px solid rgba(255,255,255,0.05);border-top-color:#ec4899;animation:spin 0.9s linear infinite;margin:0 auto 12px;"></div>
+                <p class="text-sm text-slate-500">Завантаження...</p>
+            </div>
+
+            <!-- Порожній стан -->
+            <div id="req-empty" class="hidden text-center py-12">
+                <div style="font-size:40px;margin-bottom:12px;">📋</div>
+                <p class="text-sm text-slate-400">Заявок не знайдено</p>
+            </div>
+
+            <!-- Список карток -->
+            <div id="req-list" class="hidden space-y-3"></div>
         </div>
 
         <!-- ══ РЕЄСТРАЦІЯ (нового співробітника) ══ -->
@@ -907,6 +953,7 @@
 
         const PAGE_BACK_MAP = {
             'page-2': 'page-1',
+            'page-my-requests': 'page-1',
             'page-3': 'page-1',
             'page-3b': 'page-3',
             'page-4': 'page-3b',
@@ -1027,6 +1074,114 @@
             resetForm();
             if (localStorage.getItem('fio')) showPage('page-3');
             else showPage('page-2');
+        }
+
+        // ══ МОЇ ЗАЯВКИ ══════════════════════════════════════
+        let _allRequests = [];
+        let _curFilter   = 'all';
+
+        function showMyRequests() {
+            showPage('page-my-requests');
+            loadMyRequests();
+        }
+
+        function loadMyRequests() {
+            const phone = localStorage.getItem('phone');
+            document.getElementById('req-loading').classList.remove('hidden');
+            document.getElementById('req-list').classList.add('hidden');
+            document.getElementById('req-empty').classList.add('hidden');
+
+            if (!phone) {
+                document.getElementById('req-loading').classList.add('hidden');
+                document.getElementById('req-empty').classList.remove('hidden');
+                return;
+            }
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'get_hr_requests', phone }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    _allRequests = res.orders || [];
+                    _updateCounters(res.counts || {});
+                    filterRequests(_curFilter);
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                document.getElementById('req-loading').classList.add('hidden');
+            });
+        }
+
+        function _statusGroup(status) {
+            const s = String(status || '').toLowerCase();
+            if (['нова','в роботі','в обробці','прийнята'].some(v => s.includes(v))) return 'active';
+            if (['виконан','закрит'].some(v => s.includes(v))) return 'done';
+            if (['скасован'].some(v => s.includes(v))) return 'cancel';
+            if (['відхилен'].some(v => s.includes(v))) return 'rejected';
+            if (['архів'].some(v => s.includes(v))) return 'archive';
+            return 'active';
+        }
+
+        function _statusBadge(status) {
+            const g = _statusGroup(status);
+            const cls = { active:'req-status-active', done:'req-status-done', cancel:'req-status-cancel', rejected:'req-status-rejected', archive:'req-status-archive' };
+            return `<span class="req-status ${cls[g]}">${status || 'Нова'}</span>`;
+        }
+
+        function _updateCounters(counts) {
+            const keys = ['all','active','done','cancel','rejected','archive'];
+            keys.forEach(k => {
+                const el = document.getElementById('cnt-' + k);
+                if (el) el.textContent = counts[k] || 0;
+            });
+            // Лічильник активних на page-1
+            const badge = document.getElementById('badge-active');
+            if (badge) {
+                const n = counts.active || 0;
+                badge.textContent = n;
+                badge.style.display = n > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function filterRequests(filter) {
+            _curFilter = filter;
+            document.querySelectorAll('.req-tab').forEach(b => b.classList.remove('active'));
+            const tab = document.getElementById('tab-' + filter);
+            if (tab) tab.classList.add('active');
+
+            const list = filter === 'all' ? _allRequests
+                       : _allRequests.filter(o => _statusGroup(o.status) === filter);
+
+            const el = document.getElementById('req-list');
+            if (!list.length) {
+                el.classList.add('hidden');
+                document.getElementById('req-empty').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('req-empty').classList.add('hidden');
+
+            el.innerHTML = list.map(o => `
+                <div class="req-card">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="font-semibold text-white text-[15px] leading-snug">${o.jobTitle || '—'}</span>
+                        ${_statusBadge(o.status)}
+                    </div>
+                    <div class="text-xs text-slate-400 mb-3">${o.department || '—'}</div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-slate-500 font-mono">№ ${o.orderId || '—'}</span>
+                        <div class="flex items-center gap-2">
+                            ${o.priority === 'Терміновий' ? '<span style="font-size:10px;background:rgba(239,68,68,0.15);color:#f87171;padding:2px 8px;border-radius:99px;">🔴 Терміново</span>' : ''}
+                            <span class="text-xs text-slate-500">${o.date || ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            el.classList.remove('hidden');
         }
 
         function saveProfile() {
