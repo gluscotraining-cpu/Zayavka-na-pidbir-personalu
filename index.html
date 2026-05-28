@@ -12,7 +12,7 @@
     <style>
         body { font-family: 'DM Sans', sans-serif; background-color: #060a12; overflow-x: hidden; -webkit-overflow-scrolling: touch; color: #f8fafc; }
         h1, h2, h3, .font-display { font-family: 'Space Grotesk', 'Syne', sans-serif; }
-        input, textarea, select { user-select: text; font-size: 16px !important; }
+        input, textarea, select { uфser-select: text; font-size: 16px !important; }
 
         body::before {
             content: ''; position: fixed; inset: 0;
@@ -1272,20 +1272,20 @@
                     </div>
 
                     <!-- Інфо рядки (офіс) -->
-                    ${o.stageOffice ? `<div class="flex justify-between text-xs mb-1"><span class="text-slate-400">Стадія (Офіс)</span><span class="text-cyan-300 font-semibold">${o.stageOffice}</span></div>` : ''}
-                    ${o.commentOffice ? `<div class="flex justify-between text-xs mb-2"><span class="text-slate-400">Коментар офісу</span><span class="text-slate-200 text-right ml-2 flex-1">${o.commentOffice}</span></div>` : ''}
+                    ${o.stageOffice ? `<div class="flex gap-2 text-xs mb-1"><span class="text-slate-400 flex-shrink-0">Стадія (Офіс)</span><span class="text-cyan-300 font-semibold text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${o.stageOffice}</span></div>` : ''}
+                    ${o.commentOffice ? `<div class="text-xs mb-2"><span class="text-slate-400">Коментар офісу: </span><span class="text-slate-200" style="word-break:break-word;overflow-wrap:anywhere;">${o.commentOffice}</span></div>` : ''}
 
                     <!-- Роздільник -->
                     <div style="border-top:1px solid rgba(255,255,255,0.07);margin:10px 0;"></div>
 
                     <div class="space-y-1 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Причина пошуку</span><span class="text-white text-right ml-2">${o.searchReason || '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Департамент/Відділ</span><span class="text-white text-right ml-2">${o.department || '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Вакантна посада</span><span class="text-white font-semibold text-right ml-2">${o.jobTitle || '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Куратор процесу</span><span class="text-white text-right ml-2">${contactFio}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Телефон / E-mail</span><span class="text-white text-right ml-2">${contactRest}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">ПІБ заявника</span><span class="text-white text-right ml-2">${o.requesterFio || '—'}</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Телефон заявника</span><span class="text-white text-right ml-2">${o.requesterPhone || '—'}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">Причина пошуку</span><span class="text-white text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${o.searchReason || '—'}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">Департамент/Відділ</span><span class="text-white text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${o.department || '—'}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">Вакантна посада</span><span class="text-white font-semibold text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${o.jobTitle || '—'}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">Куратор процесу</span><span class="text-white text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${contactFio}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">Телефон / E-mail</span><span class="text-white text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${contactRest}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">ПІБ заявника</span><span class="text-white text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${o.requesterFio || '—'}</span></div>
+                        <div class="flex gap-2"><span class="text-slate-400 flex-shrink-0">Телефон заявника</span><span class="text-white text-right ml-auto" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${o.requesterPhone || '—'}</span></div>
                     </div>
 
                     <!-- Кнопки -->
