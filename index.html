@@ -240,34 +240,34 @@
             <!-- Фільтри — сітка карточок -->
             <div class="grid grid-cols-3 gap-2 mb-5">
                 <button id="tab-all"      onclick="filterRequests('all')"
-                    style="background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
-                    <span id="cnt-all"      style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#94a3b8;">0</span>
-                    <span style="font-size:10px;color:#64748b;font-weight:600;">Всі</span>
+                    style="background:rgba(148,163,184,0.18);border:1px solid rgba(148,163,184,0.4);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.25);">
+                    <span id="cnt-all"      style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#cbd5e1;">0</span>
+                    <span style="font-size:10px;color:#94a3b8;font-weight:600;">Всі</span>
                 </button>
                 <button id="tab-active"   onclick="filterRequests('active')"
-                    style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    style="background:rgba(59,130,246,0.18);border:1px solid rgba(59,130,246,0.45);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 10px rgba(59,130,246,0.15);">
                     <span id="cnt-active"  style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#60a5fa;">0</span>
-                    <span style="font-size:10px;color:#64748b;font-weight:600;">Активні</span>
+                    <span style="font-size:10px;color:#93c5fd;font-weight:600;">Активні</span>
                 </button>
                 <button id="tab-done"     onclick="filterRequests('done')"
-                    style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.45);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 10px rgba(16,185,129,0.15);">
                     <span id="cnt-done"    style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#34d399;">0</span>
-                    <span style="font-size:10px;color:#64748b;font-weight:600;">Виконані</span>
+                    <span style="font-size:10px;color:#6ee7b7;font-weight:600;">Виконані</span>
                 </button>
                 <button id="tab-cancel"   onclick="filterRequests('cancel')"
-                    style="background:rgba(100,116,139,0.08);border:1px solid rgba(100,116,139,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
-                    <span id="cnt-cancel"  style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#94a3b8;">0</span>
-                    <span style="font-size:10px;color:#64748b;font-weight:600;">Скасовані</span>
+                    style="background:rgba(100,116,139,0.18);border:1px solid rgba(100,116,139,0.4);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.2);">
+                    <span id="cnt-cancel"  style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#cbd5e1;">0</span>
+                    <span style="font-size:10px;color:#94a3b8;font-weight:600;">Скасовані</span>
                 </button>
                 <button id="tab-rejected" onclick="filterRequests('rejected')"
-                    style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 10px rgba(239,68,68,0.15);">
                     <span id="cnt-rejected" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f87171;">0</span>
-                    <span style="font-size:10px;color:#64748b;font-weight:600;text-align:center;line-height:1.2;">Відх.<br>офісом</span>
+                    <span style="font-size:10px;color:#fca5a5;font-weight:600;text-align:center;line-height:1.2;">Відх.<br>офісом</span>
                 </button>
                 <button id="tab-archive"  onclick="filterRequests('archive')"
-                    style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;">
+                    style="background:rgba(245,158,11,0.18);border:1px solid rgba(245,158,11,0.45);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 10px rgba(245,158,11,0.15);">
                     <span id="cnt-archive" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fbbf24;">0</span>
-                    <span style="font-size:10px;color:#64748b;font-weight:600;">Архівні</span>
+                    <span style="font-size:10px;color:#fcd34d;font-weight:600;">Архівні</span>
                 </button>
             </div>
 
@@ -1215,20 +1215,20 @@
         }
 
         const TAB_ACTIVE_STYLE = {
-            'all':      'box-shadow:0 0 0 2px rgba(148,163,184,0.5);background:rgba(148,163,184,0.15);',
-            'active':   'box-shadow:0 0 0 2px rgba(59,130,246,0.6);background:rgba(59,130,246,0.15);',
-            'done':     'box-shadow:0 0 0 2px rgba(16,185,129,0.6);background:rgba(16,185,129,0.15);',
-            'cancel':   'box-shadow:0 0 0 2px rgba(100,116,139,0.5);background:rgba(100,116,139,0.15);',
-            'rejected': 'box-shadow:0 0 0 2px rgba(239,68,68,0.5);background:rgba(239,68,68,0.15);',
-            'archive':  'box-shadow:0 0 0 2px rgba(245,158,11,0.5);background:rgba(245,158,11,0.15);',
+            'all':      'box-shadow:0 0 0 2px rgba(148,163,184,0.8),0 0 18px rgba(148,163,184,0.25);background:rgba(148,163,184,0.32);',
+            'active':   'box-shadow:0 0 0 2px rgba(59,130,246,0.9),0 0 18px rgba(59,130,246,0.3);background:rgba(59,130,246,0.32);',
+            'done':     'box-shadow:0 0 0 2px rgba(16,185,129,0.9),0 0 18px rgba(16,185,129,0.3);background:rgba(16,185,129,0.32);',
+            'cancel':   'box-shadow:0 0 0 2px rgba(100,116,139,0.8),0 0 18px rgba(100,116,139,0.2);background:rgba(100,116,139,0.32);',
+            'rejected': 'box-shadow:0 0 0 2px rgba(239,68,68,0.85),0 0 18px rgba(239,68,68,0.3);background:rgba(239,68,68,0.28);',
+            'archive':  'box-shadow:0 0 0 2px rgba(245,158,11,0.85),0 0 18px rgba(245,158,11,0.3);background:rgba(245,158,11,0.28);',
         };
         const TAB_BASE_STYLE = {
-            'all':      'background:rgba(148,163,184,0.08);',
-            'active':   'background:rgba(59,130,246,0.08);',
-            'done':     'background:rgba(16,185,129,0.08);',
-            'cancel':   'background:rgba(100,116,139,0.08);',
-            'rejected': 'background:rgba(239,68,68,0.08);',
-            'archive':  'background:rgba(245,158,11,0.08);',
+            'all':      'background:rgba(148,163,184,0.18);box-shadow:0 2px 10px rgba(0,0,0,0.25);',
+            'active':   'background:rgba(59,130,246,0.18);box-shadow:0 2px 10px rgba(59,130,246,0.15);',
+            'done':     'background:rgba(16,185,129,0.18);box-shadow:0 2px 10px rgba(16,185,129,0.15);',
+            'cancel':   'background:rgba(100,116,139,0.18);box-shadow:0 2px 10px rgba(0,0,0,0.2);',
+            'rejected': 'background:rgba(239,68,68,0.18);box-shadow:0 2px 10px rgba(239,68,68,0.15);',
+            'archive':  'background:rgba(245,158,11,0.18);box-shadow:0 2px 10px rgba(245,158,11,0.15);',
         };
 
         function filterRequests(filter) {
