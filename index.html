@@ -178,7 +178,6 @@
             border: 1px solid rgba(245,158,11,0.35);
         }
 
-        /* Модалка "В розробці" */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(6, 10, 18, 0.75);
@@ -244,6 +243,23 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 30px rgba(245,158,11,0.3);
+        }
+
+        /* Бейдж типу заявки в хедері */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 99px;
+            background: rgba(245,158,11,0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(245,158,11,0.3);
+            margin-left: auto;
         }
 
         *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
@@ -334,16 +350,13 @@
             <p class="text-sm text-slate-400 leading-relaxed mb-5">Оберіть напрямок, для якого потрібно створити заявку на підбір персоналу.</p>
 
             <div class="space-y-4">
-                <!-- Картка 1: Офіс -->
                 <div class="type-card" style="--c1:#ec4899;--c2:#8b5cf6;" onclick="selectRequestType('office')">
                     <div class="flex items-start gap-4 relative z-10">
                         <div style="width:56px;height:56px;flex-shrink:0;border-radius:16px;background:linear-gradient(135deg,rgba(236,72,153,0.25),rgba(139,92,246,0.25));border:1px solid rgba(236,72,153,0.35);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(236,72,153,0.2);">
                             <i data-lucide="building-2" class="text-pink-400" style="width:28px;height:28px;"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-1">
-                                <h3 class="font-bold text-lg text-white font-display">Працівник офісу</h3>
-                            </div>
+                            <h3 class="font-bold text-lg text-white font-display mb-1">Працівник офісу</h3>
                             <p class="text-xs text-slate-400 leading-relaxed mb-3">Заявка на підбір співробітника в офісний підрозділ компанії</p>
                             <div class="flex items-center justify-between">
                                 <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">
@@ -351,37 +364,28 @@
                                     Доступно
                                 </span>
                                 <span class="inline-flex items-center gap-1 text-xs text-slate-300 font-semibold">
-                                    Обрати
-                                    <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+                                    Обрати <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Картка 2: АЗК -->
-                <div class="type-card disabled" style="--c1:#f59e0b;--c2:#ef4444;" onclick="selectRequestType('azk')">
+                <div class="type-card" style="--c1:#f59e0b;--c2:#ef4444;" onclick="selectRequestType('azk')">
                     <div class="flex items-start gap-4 relative z-10">
                         <div style="width:56px;height:56px;flex-shrink:0;border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(239,68,68,0.2));border:1px solid rgba(245,158,11,0.35);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(245,158,11,0.18);">
                             <i data-lucide="fuel" class="text-amber-400" style="width:28px;height:28px;"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-1 flex-wrap">
-                                <h3 class="font-bold text-lg text-white font-display">Працівник АЗК</h3>
-                                <span class="dev-badge">
-                                    <i data-lucide="hammer" style="width:10px;height:10px;"></i>
-                                    В розробці
-                                </span>
-                            </div>
+                            <h3 class="font-bold text-lg text-white font-display mb-1">Працівник АЗК</h3>
                             <p class="text-xs text-slate-400 leading-relaxed mb-3">Заявка на підбір співробітника для автозаправної станції</p>
                             <div class="flex items-center justify-between">
-                                <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
-                                    <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px #f59e0b;"></span>
-                                    Скоро
+                                <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">
+                                    <span style="width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>
+                                    Доступно
                                 </span>
-                                <span class="inline-flex items-center gap-1 text-xs text-slate-500 font-semibold">
-                                    Незабаром
-                                    <i data-lucide="clock" style="width:14px;height:14px;"></i>
+                                <span class="inline-flex items-center gap-1 text-xs text-slate-300 font-semibold">
+                                    Обрати <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
                                 </span>
                             </div>
                         </div>
@@ -391,27 +395,7 @@
 
             <div style="margin-top:20px;padding:14px;border-radius:14px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);display:flex;gap:10px;align-items:flex-start;">
                 <i data-lucide="info" class="text-blue-400 flex-shrink-0" style="width:18px;height:18px;margin-top:1px;"></i>
-                <p class="text-xs text-slate-300 leading-relaxed">Оберіть тип заявки, що відповідає місцю роботи майбутнього співробітника. Функціонал для АЗК знаходиться в активній розробці.</p>
-            </div>
-        </div>
-
-        <!-- ══ МОДАЛКА "В РОЗРОБЦІ" ══ -->
-        <div id="modal-dev" class="modal-overlay" onclick="if(event.target===this) closeDevModal()">
-            <div class="modal-box">
-                <div class="modal-icon-wrap">
-                    <div class="ring"></div>
-                    <div class="ring delay"></div>
-                    <div class="core">
-                        <i data-lucide="construction" class="text-amber-400" style="width:34px;height:34px;"></i>
-                    </div>
-                </div>
-                <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">В розробці</h3>
-                <p style="font-size:14px;color:#cbd5e1;line-height:1.6;margin-bottom:6px;">Функція створення заявки для працівників <strong style="color:#fbbf24;">АЗК</strong> наразі знаходиться в розробці.</p>
-                <p style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:24px;">Наша команда активно працює над цим розділом. Будь ласка, скористайтесь іншим типом заявки або завітайте пізніше.</p>
-                <button onclick="closeDevModal()" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-family:'Space Grotesk','Syne',sans-serif;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 15px rgba(245,158,11,0.4);">
-                    <i data-lucide="x" style="width:18px;height:18px;"></i>
-                    Зрозуміло
-                </button>
+                <p class="text-xs text-slate-300 leading-relaxed">Оберіть тип заявки, що відповідає місцю роботи майбутнього співробітника.</p>
             </div>
         </div>
 
@@ -562,10 +546,14 @@
             </div>
         </div>
 
+        <!-- ══════════════════════════════════════════ -->
+        <!-- FLOW: ПРАЦІВНИК ОФІСУ (існуючий)           -->
+        <!-- ══════════════════════════════════════════ -->
         <div id="page-3" class="page-section hidden">
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-select-type')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Підрозділ та Керівник</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -608,6 +596,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-3')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Назва вакансії</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -661,6 +650,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-3b')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Причина та умови</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -728,6 +718,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-4')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Профіль кандидата</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -782,6 +773,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-5')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Досвід роботи</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -810,6 +802,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-5b')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Знання та навички</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -838,6 +831,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-5c')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Знання мов та ПК</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -894,6 +888,7 @@
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-6')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Якості кандидата</h2>
+                <span class="type-badge"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
@@ -918,25 +913,152 @@
             </div>
         </div>
 
-        <div id="page-7" class="page-section hidden">
+        <!-- ══════════════════════════════════════════ -->
+        <!-- FLOW: ПРАЦІВНИК АЗК (новий)                -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="page-azk-1" class="page-section hidden">
             <div class="page-header">
-                <button class="btn-back" onclick="showPage('page-6b')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-                <h2 class="text-gradient">Контроль процесу</h2>
+                <button class="btn-back" onclick="showPage('page-select-type')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Локація та Керівник</h2>
+                <span class="type-badge" style="background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.3);"><i data-lucide="fuel" style="width:10px;height:10px;"></i> АЗК</span>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Локація АЗК та керівництво</span><span>1 / 5</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-5">
+                <div>
+                    <div class="field-label"><i data-lucide="fuel" class="w-4 h-4 text-amber-400"></i> Локація №АЗК</div>
+                    <input type="text" id="azk-location" placeholder="Напр: АЗК №77" class="w-full p-4 rounded-xl glass-input text-[15px]" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false">
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="user-cog" class="w-4 h-4 text-amber-400"></i> ПІБ Керівника (регіональний менеджер)</div>
+                    <input type="text" id="azk-manager" placeholder="Напр: Іваненко Іван Іванович" class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="lettersOnly(this)" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false">
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="check-circle" class="w-4 h-4 text-amber-400"></i> Вакансія погоджена з Регіональним менеджером</div>
+                    <select id="azk-manager-approved" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="" disabled selected>Оберіть зі списку...</option>
+                        <option value="Так">🟢 Так, погоджено</option>
+                        <option value="Ні">🔴 Ні, не погоджено</option>
+                    </select>
+                </div>
+                <button onclick="goToAzkPage2()" class="btn-primary mt-4" style="background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 4px 15px rgba(245,158,11,0.4);">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-azk-2" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-azk-1')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Посада та обов'язки</h2>
+                <span class="type-badge" style="background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.3);"><i data-lucide="fuel" style="width:10px;height:10px;"></i> АЗК</span>
+            </div>
+            <div class="progress-wrap pb-5">
+                <div class="progress-steps">
+                    <div class="progress-step done"></div>
+                    <div class="progress-step active"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
+                </div>
+                <div class="progress-label"><span class="current-step">Деталі вакантної посади</span><span>2 / 5</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <div>
+                    <div class="field-label"><i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i> Назва вакантної посади</div>
+                    <input type="text" id="azk-job-title" placeholder="Напр: Касир, Оператор, Приберальниця" class="w-full p-4 rounded-xl glass-input text-[15px]" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false">
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="users" class="w-4 h-4 text-amber-400"></i> Кількість відкритих вакансій</div>
+                    <input type="number" id="azk-vacancies-count" placeholder="Напр: 7" class="w-full p-4 rounded-xl glass-input text-[15px]" inputmode="numeric" min="1" autocomplete="off">
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="clipboard-list" class="w-4 h-4 text-amber-400"></i> Ключові функції (обов'язки на посаді)</div>
+                    <textarea id="azk-job-functions" placeholder="Опишіть головні завдання, які виконуватиме працівник на АЗК..." class="w-full p-4 rounded-xl glass-input text-[15px] h-32 resize-none" autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false"></textarea>
+                </div>
+                <button onclick="goToAzkPage3()" class="btn-primary mt-2" style="background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 4px 15px rgba(245,158,11,0.4);">Продовжити →</button>
+            </div>
+        </div>
+
+        <div id="page-azk-3" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-azk-2')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Умови та оплата</h2>
+                <span class="type-badge" style="background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.3);"><i data-lucide="fuel" style="width:10px;height:10px;"></i> АЗК</span>
             </div>
             <div class="progress-wrap pb-5">
                 <div class="progress-steps">
                     <div class="progress-step done"></div>
                     <div class="progress-step done"></div>
-                    <div class="progress-step done"></div>
-                    <div class="progress-step done"></div>
-                    <div class="progress-step done"></div>
-                    <div class="progress-step done"></div>
-                    <div class="progress-step done"></div>
-                    <div class="progress-step done"></div>
                     <div class="progress-step active"></div>
                     <div class="progress-step idle"></div>
+                    <div class="progress-step idle"></div>
                 </div>
-                <div class="progress-label"><span class="current-step">Контактна особа</span><span>9 / 10</span></div>
+                <div class="progress-label"><span class="current-step">Заробітна плата та умови</span><span>3 / 5</span></div>
+            </div>
+
+            <div class="glass p-5 rounded-2xl space-y-4">
+                <div>
+                    <div class="field-label"><i data-lucide="banknote" class="w-4 h-4 text-emerald-400"></i> Заробітна плата (₴)</div>
+                    <input type="text" inputmode="numeric" id="azk-salary" placeholder="Напр: 25000" class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="digitsOnly(this)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="search" class="w-4 h-4 text-amber-400"></i> Причина пошуку</div>
+                    <select id="azk-search-reason" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="" disabled selected>Оберіть причину...</option>
+                        <option value="Звільнення працівника (заміна)">Звільнення працівника (заміна)</option>
+                        <option value="Відкриття нової посади">Відкриття нової посади</option>
+                        <option value="Декретна відпустка">Декретна відпустка</option>
+                        <option value="Планове розширення штату">Планове розширення штату</option>
+                        <option value="Сезонне розширення">Сезонне розширення штату</option>
+                        <option value="Створення нового відділу">Створення нового відділу</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i> Пріоритет закриття вакансії</div>
+                    <select id="azk-priority" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="" disabled selected>Оберіть пріоритет...</option>
+                        <option value="Стандартний">🔵 Стандартний</option>
+                        <option value="Терміновий">🔴 Терміновий</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="field-label"><i data-lucide="calendar-clock" class="w-4 h-4 text-cyan-400"></i> Тривалість випробувального терміну</div>
+                    <select id="azk-probation-duration" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
+                        <option value="" disabled selected>Оберіть термін...</option>
+                        <option value="Без випробувального терміну">Без випробувального терміну</option>
+                        <option value="1 місяць">1 місяць</option>
+                        <option value="2 місяці">2 місяці</option>
+                        <option value="3 місяці">3 місяці (Стандарт)</option>
+                        <option value="6 місяців">6 місяців</option>
+                    </select>
+                </div>
+                <button onclick="goToAzkPage4()" class="btn-primary mt-2" style="background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 4px 15px rgba(245,158,11,0.4);">Продовжити →</button>
+            </div>
+        </div>
+
+        <!-- page-azk-4 = page-7 (Контроль процесу) - спільна сторінка -->
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- СПІЛЬНА сторінка: Контроль процесу         -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="page-7" class="page-section hidden">
+            <div class="page-header">
+                <button class="btn-back" id="page-7-back-btn" onclick="goBackFromPage7()"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Контроль процесу</h2>
+                <span class="type-badge" id="page-7-type-badge" style="background:rgba(236,72,153,0.12);color:#f9a8d4;border-color:rgba(236,72,153,0.3);"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
+            </div>
+            <div class="progress-wrap pb-5" id="page-7-progress-wrap">
+                <div class="progress-steps" id="page-7-progress-steps"></div>
+                <div class="progress-label"><span class="current-step" id="page-7-progress-label">Контактна особа</span><span id="page-7-progress-count">9 / 10</span></div>
             </div>
 
             <div class="glass p-5 rounded-2xl space-y-4">
@@ -957,10 +1079,14 @@
             </div>
         </div>
 
+        <!-- ══════════════════════════════════════════ -->
+        <!-- SUMMARY: Працівник Офісу                   -->
+        <!-- ══════════════════════════════════════════ -->
         <div id="page-8" class="page-section hidden w-full pb-10">
             <div class="page-header">
                 <button class="btn-back" onclick="showPage('page-7')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                 <h2 class="text-gradient">Перевірка та підтвердження</h2>
+                <span class="type-badge" style="background:rgba(236,72,153,0.12);color:#f9a8d4;border-color:rgba(236,72,153,0.3);"><i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс</span>
             </div>
 
             <div class="glass p-5 rounded-2xl text-[14px] leading-relaxed shadow-lg relative overflow-hidden w-full max-h-[70vh] overflow-y-auto custom-scroll">
@@ -968,7 +1094,7 @@
 
                 <div class="flex items-center gap-3 mb-4">
                     <div class="p-2 bg-indigo-500/20 rounded-lg"><i data-lucide="file-check" class="text-indigo-400 w-5 h-5"></i></div>
-                    <span class="font-bold text-base text-indigo-300">Картка вакансії</span>
+                    <span class="font-bold text-base text-indigo-300">Картка вакансії · Офіс</span>
                 </div>
 
                 <div class="summary-section-title">Структура та Керівництво</div>
@@ -1022,6 +1148,55 @@
             </div>
         </div>
 
+        <!-- ══════════════════════════════════════════ -->
+        <!-- SUMMARY: Працівник АЗК                     -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="page-8-azk" class="page-section hidden w-full pb-10">
+            <div class="page-header">
+                <button class="btn-back" onclick="showPage('page-7')"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                <h2 class="text-gradient">Перевірка та підтвердження</h2>
+                <span class="type-badge" style="background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.3);"><i data-lucide="fuel" style="width:10px;height:10px;"></i> АЗК</span>
+            </div>
+
+            <div class="glass p-5 rounded-2xl text-[14px] leading-relaxed shadow-lg relative overflow-hidden w-full max-h-[70vh] overflow-y-auto custom-scroll">
+                <div class="absolute top-0 left-0 w-full h-1" style="background:linear-gradient(90deg,#f59e0b,#ef4444);"></div>
+
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 rounded-lg" style="background:rgba(245,158,11,0.2);"><i data-lucide="file-check" class="text-amber-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-base text-amber-300">Картка вакансії · АЗК</span>
+                </div>
+
+                <div class="summary-section-title" style="color:#fbbf24;">Локація та Керівництво</div>
+                <div class="summary-row"><span class="summary-label">Локація №АЗК:</span> <span id="azk-sum-location" class="summary-val font-bold text-white text-right"></span></div>
+                <div class="summary-row"><span class="summary-label">Регіональний менеджер:</span> <span id="azk-sum-manager" class="summary-val font-medium text-white text-right"></span></div>
+                <div class="summary-row"><span class="summary-label">Погоджено з менеджером:</span> <span id="azk-sum-approved" class="summary-val font-semibold text-emerald-400"></span></div>
+
+                <div class="summary-section-title" style="color:#fbbf24;">Деталі Посади</div>
+                <div class="summary-row"><span class="summary-label">Вакантна посада:</span> <span id="azk-sum-title" class="summary-val font-bold text-white text-right"></span></div>
+                <div class="summary-row"><span class="summary-label">Кількість вакансій:</span> <span id="azk-sum-v-count" class="summary-val"></span></div>
+
+                <div class="text-[11px] text-slate-500 mt-2">Ключові функції на посаді:</div>
+                <div id="azk-sum-functions" class="summary-block-text"></div>
+
+                <div class="summary-section-title" style="color:#fbbf24;">Умови роботи</div>
+                <div class="summary-row"><span class="summary-label">Заробітна плата:</span> <span id="azk-sum-salary" class="summary-val text-emerald-400 font-bold"></span></div>
+                <div class="summary-row"><span class="summary-label">Причина пошуку:</span> <span id="azk-sum-reason" class="summary-val text-amber-400 text-right"></span></div>
+                <div class="summary-row"><span class="summary-label">Пріоритет:</span> <span id="azk-sum-prio" class="summary-val"></span></div>
+                <div class="summary-row"><span class="summary-label">Випробув. термін:</span> <span id="azk-sum-prob-dur" class="summary-val"></span></div>
+
+                <div class="summary-section-title" style="color:#fbbf24;">Контроль та зв'язок</div>
+                <div class="summary-row"><span class="summary-label">Куратор процесу:</span> <span id="azk-sum-c-fio" class="summary-val text-blue-400"></span></div>
+                <div class="summary-row"><span class="summary-label">Телефон / E-mail:</span> <span id="azk-sum-c-contacts" class="summary-val text-white text-xs"></span></div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button onclick="showPage('page-azk-1')" class="flex-1 bg-slate-700/50 p-4 rounded-xl font-semibold text-white">Редагувати з нуля</button>
+                <button onclick="fakeSubmit()" class="flex-1 p-4 rounded-xl font-semibold text-white flex justify-center items-center gap-2 shadow-lg" style="background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 4px 15px rgba(245,158,11,0.4);">
+                    <i data-lucide="send" class="w-5 h-5"></i> Надіслати в HR
+                </button>
+            </div>
+        </div>
+
         <div id="page-success" class="page-section hidden pt-16 text-center">
             <div class="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-xl shadow-emerald-500/5 animate-pop">✅</div>
             <h2 class="text-2xl font-bold text-emerald-400 mb-2">Заявку надіслано!</h2>
@@ -1049,6 +1224,9 @@
 
         const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwMaHkrRhSVEUOsQS9DA4eZqEsywJKG8N1yWRVUtRlOpuqx_NEh4LufSFSqUIszWmXH7g/exec';
         const TELEGRAM_ID = tg?.initDataUnsafe?.user?.id || 'BROWSER_TEST_MODE';
+
+        // ══ ГЛОБАЛЬНИЙ СТАН: тип заявки ══
+        let REQUEST_TYPE = 'office'; // 'office' | 'azk'
 
         function checkAccess() {
             if (TELEGRAM_ID === 'BROWSER_TEST_MODE') { hideSplash(); return; }
@@ -1163,6 +1341,7 @@
 
         checkAccess();
 
+        // ══ МАПА НАВІГАЦІЇ (з урахуванням типу) ══
         const PAGE_BACK_MAP = {
             'page-2': 'page-1',
             'page-select-type': 'page-1',
@@ -1177,16 +1356,33 @@
             'page-5c': 'page-5b',
             'page-6': 'page-5c',
             'page-6b': 'page-6',
-            'page-7': 'page-6b',
+            'page-7': '__dynamic__',     // визначається динамічно
             'page-8': 'page-7',
+            'page-8-azk': 'page-7',
+            'page-azk-1': 'page-select-type',
+            'page-azk-2': 'page-azk-1',
+            'page-azk-3': 'page-azk-2',
         };
 
         if (tg?.BackButton) {
             tg.BackButton.onClick(() => {
-                const dest = PAGE_BACK_MAP[currentPageId];
+                const dest = getBackDestination(currentPageId);
                 if (dest) showPage(dest);
                 else tg.BackButton.hide();
             });
+        }
+
+        function getBackDestination(pageId) {
+            if (pageId === 'page-7') {
+                // Динамічно: куди повертатись з page-7
+                return REQUEST_TYPE === 'azk' ? 'page-azk-3' : 'page-6b';
+            }
+            return PAGE_BACK_MAP[pageId];
+        }
+
+        function goBackFromPage7() {
+            const dest = REQUEST_TYPE === 'azk' ? 'page-azk-3' : 'page-6b';
+            showPage(dest);
         }
 
         let currentPageId = 'page-1';
@@ -1245,25 +1441,16 @@
 
         // ══ ВИБІР ТИПУ ЗАЯВКИ ══
         function selectRequestType(type) {
+            REQUEST_TYPE = type;
             if (type === 'office') {
                 resetForm();
                 if (localStorage.getItem('fio')) showPage('page-3');
                 else showPage('page-2');
             } else if (type === 'azk') {
-                openDevModal();
+                resetAzkForm();
+                if (localStorage.getItem('fio')) showPage('page-azk-1');
+                else showPage('page-2');
             }
-        }
-
-        function openDevModal() {
-            const modal = document.getElementById('modal-dev');
-            modal.classList.add('show');
-            lucide.createIcons();
-            if (tg?.HapticFeedback) {
-                try { tg.HapticFeedback.notificationOccurred('warning'); } catch(e){}
-            }
-        }
-        function closeDevModal() {
-            document.getElementById('modal-dev').classList.remove('show');
         }
 
         function resetForm() {
@@ -1280,8 +1467,242 @@
             document.getElementById('custom-programs-wrap').classList.add('hidden');
         }
 
-        function startNewRequest() { showPage('page-select-type'); }
+        function resetAzkForm() {
+            ['azk-location', 'azk-manager', 'azk-job-title', 'azk-vacancies-count',
+             'azk-job-functions', 'azk-salary',
+             'contact-fio', 'contact-phone', 'contact-email'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.value = '';
+            });
+            ['azk-manager-approved', 'azk-search-reason', 'azk-priority', 'azk-probation-duration'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.selectedIndex = 0;
+            });
+        }
 
+        // ══ FLOW ОФІСУ ══
+        function goToPage3b() {
+            const fields = [
+                { id: 'department',       check: el => el.value.trim() },
+                { id: 'manager-fio',      check: el => el.value.trim() },
+                { id: 'manager-approved', check: el => el.value },
+            ];
+            if (!markErrors(fields)) { notify("⚠️ Заповніть всі поля та оберіть варіант погодження!"); return; }
+            showPage('page-3b');
+        }
+        function goToPage4() {
+            const fields = [{ id: 'job-title', check: el => el.value.trim() }, { id: 'vacancies-count', check: el => el.value.trim() }, { id: 'subordinates-count', check: el => el.value }, { id: 'job-functions', check: el => el.value.trim() }];
+            if (!markErrors(fields)) { notify("⚠️ Вкажіть назву посади, кількість вакансій, підлеглих та обов'язки!"); return; }
+            showPage('page-4');
+        }
+        function goToPage5() {
+            const fields = [{ id: 'search-reason', check: el => el.value }, { id: 'priority', check: el => el.value }, { id: 'salary-probation', check: el => el.value.trim() }, { id: 'salary-after', check: el => el.value.trim() }, { id: 'probation-duration', check: el => el.value }];
+            if (!markErrors(fields)) { notify("⚠️ Оберіть причину, пріоритет, термін та вкажіть умови заробітної плати!"); return; }
+            showPage('page-5');
+        }
+        function goToPage5b() {
+            const fields = [{ id: 'candidate-age-from', check: el => el.value }, { id: 'candidate-age-to', check: el => el.value }, { id: 'candidate-education', check: el => el.value }, { id: 'candidate-specialty', check: el => el.value.trim() }];
+            if (!markErrors(fields)) { notify("⚠️ Оберіть вік, рівень освіти та вкажіть спеціальність!"); return; }
+            const fromAge = parseInt(document.getElementById('candidate-age-from').value);
+            const toAge = parseInt(document.getElementById('candidate-age-to').value);
+            if (toAge < fromAge) {
+                ['candidate-age-from','candidate-age-to'].forEach(id => flashError(document.getElementById(id)));
+                notify("⚠️ Помилка: Вік 'до' не може бути меншим за вік 'від'!"); return;
+            }
+            showPage('page-5b');
+        }
+        function goToPage5c() {
+            const fields = [{ id: 'candidate-experience', check: el => el.value.trim() }];
+            if (!markErrors(fields)) { notify("⚠️ Заповніть вимоги щодо досвіду роботи!"); return; }
+            showPage('page-5c');
+        }
+        function goToPage6() {
+            const fields = [{ id: 'candidate-skills', check: el => el.value.trim() }];
+            if (!markErrors(fields)) { notify("⚠️ Заповніть поле професійних знань та вмінь!"); return; }
+            showPage('page-6');
+        }
+        function goToPage6b() {
+            const langRows = document.querySelectorAll('#languages-container > div');
+            let valid = true; let count = 0;
+            langRows.forEach(row => {
+                const langSel = row.querySelector('.lang-select-val');
+                const lvlSel  = row.querySelector('.level-select-val');
+                if(!langSel.value || !lvlSel.value) { valid = false; flashError(langSel); flashError(lvlSel); }
+                count++;
+            });
+            if(count === 0) { notify("⚠️ Додайте хоча б одну мову та рівень володіння через кнопку + !"); return; }
+            if(!valid) { notify("⚠️ Будь ласка, заповніть обрані мови та рівні або видаліть порожній рядок!"); return; }
+            const pcEl = document.getElementById('candidate-pc');
+            if(!pcEl.value) { flashError(pcEl); notify("⚠️ Оберіть рівень володіння ПК!"); return; }
+            const needProgEl = document.getElementById('need-programs');
+            if(!needProgEl.value) { flashError(needProgEl); notify("⚠️ Вкажіть чи потрібні спеціалізовані програми!"); return; }
+            if(needProgEl.value === 'yes' && !document.getElementById('custom-programs').value.trim()) {
+                flashError(document.getElementById('custom-programs'));
+                notify("⚠️ Вкажіть назви спеціалізованих програм!"); return;
+            }
+            showPage('page-6b');
+        }
+        function goToPage7() {
+            const fields = [{ id: 'candidate-traits', check: el => el.value.trim() }];
+            if (!markErrors(fields)) { notify("⚠️ Опишіть особисті якості кандидата!"); return; }
+            REQUEST_TYPE = 'office';
+            updatePage7ForType('office');
+            showPage('page-7');
+        }
+
+        // ══ FLOW АЗК ══
+        function goToAzkPage2() {
+            const fields = [
+                { id: 'azk-location', check: el => el.value.trim() },
+                { id: 'azk-manager', check: el => el.value.trim() },
+                { id: 'azk-manager-approved', check: el => el.value },
+            ];
+            if (!markErrors(fields)) { notify("⚠️ Заповніть всі поля та оберіть варіант погодження!"); return; }
+            showPage('page-azk-2');
+        }
+
+        function goToAzkPage3() {
+            const fields = [
+                { id: 'azk-job-title', check: el => el.value.trim() },
+                { id: 'azk-vacancies-count', check: el => el.value.trim() },
+                { id: 'azk-job-functions', check: el => el.value.trim() },
+            ];
+            if (!markErrors(fields)) { notify("⚠️ Вкажіть посаду, кількість вакансій та обов'язки!"); return; }
+            showPage('page-azk-3');
+        }
+
+        function goToAzkPage4() {
+            const fields = [
+                { id: 'azk-salary', check: el => el.value.trim() },
+                { id: 'azk-search-reason', check: el => el.value },
+                { id: 'azk-priority', check: el => el.value },
+                { id: 'azk-probation-duration', check: el => el.value },
+            ];
+            if (!markErrors(fields)) { notify("⚠️ Заповніть всі поля: зарплата, причина, пріоритет та термін!"); return; }
+            REQUEST_TYPE = 'azk';
+            updatePage7ForType('azk');
+            showPage('page-7');
+        }
+
+        // ══ ОНОВЛЕННЯ page-7 під тип заявки ══
+        function updatePage7ForType(type) {
+            const badge = document.getElementById('page-7-type-badge');
+            const stepsEl = document.getElementById('page-7-progress-steps');
+            const labelEl = document.getElementById('page-7-progress-label');
+            const countEl = document.getElementById('page-7-progress-count');
+
+            if (type === 'office') {
+                badge.innerHTML = '<i data-lucide="building-2" style="width:10px;height:10px;"></i> Офіс';
+                badge.style.background = 'rgba(236,72,153,0.12)';
+                badge.style.color = '#f9a8d4';
+                badge.style.borderColor = 'rgba(236,72,153,0.3)';
+                // 10 кроків: 8 done + 1 active + 1 idle
+                let html = '';
+                for (let i = 0; i < 8; i++) html += '<div class="progress-step done"></div>';
+                html += '<div class="progress-step active"></div>';
+                html += '<div class="progress-step idle"></div>';
+                stepsEl.innerHTML = html;
+                labelEl.textContent = 'Контактна особа';
+                countEl.textContent = '9 / 10';
+            } else {
+                badge.innerHTML = '<i data-lucide="fuel" style="width:10px;height:10px;"></i> АЗК';
+                badge.style.background = 'rgba(245,158,11,0.12)';
+                badge.style.color = '#fbbf24';
+                badge.style.borderColor = 'rgba(245,158,11,0.3)';
+                // 5 кроків: 3 done + 1 active + 1 idle
+                let html = '';
+                for (let i = 0; i < 3; i++) html += '<div class="progress-step done"></div>';
+                html += '<div class="progress-step active"></div>';
+                html += '<div class="progress-step idle"></div>';
+                stepsEl.innerHTML = html;
+                labelEl.textContent = 'Контактна особа';
+                countEl.textContent = '4 / 5';
+            }
+            lucide.createIcons();
+        }
+
+        // ══ SUMMARY: рендер під тип ══
+        function renderSummary() {
+            if(!document.getElementById('contact-fio').value.trim() || !document.getElementById('contact-phone').value.trim()) {
+                notify("⚠️ Вкажіть контактну особу та її номер телефону!"); return;
+            }
+            if (!validatePhone(document.getElementById('contact-phone'))) return;
+
+            const emailField = document.getElementById('contact-email');
+            const emailValue = emailField.value.trim();
+            if (emailValue !== "") {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(emailValue)) {
+                    notify("⚠️ Помилка: Якщо ви заповнюєте поле E-mail, воно повинно бути справжньою адресою пошти з символом @ та доменом (наприклад: name@company.com)!");
+                    emailField.classList.add('error-input');
+                    return;
+                }
+            }
+            emailField.classList.remove('error-input');
+
+            if (REQUEST_TYPE === 'office') {
+                renderOfficeSummary();
+                showPage('page-8');
+            } else {
+                renderAzkSummary();
+                showPage('page-8-azk');
+            }
+        }
+
+        function renderOfficeSummary() {
+            document.getElementById('sum-dept').innerText = document.getElementById('department').value;
+            document.getElementById('sum-manager').innerText = document.getElementById('manager-fio').value;
+            document.getElementById('sum-approved').innerText = document.getElementById('manager-approved').value;
+            document.getElementById('sum-title').innerText = document.getElementById('job-title').value;
+            document.getElementById('sum-v-count').innerText = document.getElementById('vacancies-count').value || "1";
+            document.getElementById('sum-sub-count').innerText = document.getElementById('subordinates-count').value;
+            document.getElementById('sum-functions').innerText = document.getElementById('job-functions').value;
+            document.getElementById('sum-reason').innerText = document.getElementById('search-reason').value;
+            document.getElementById('sum-prio').innerText = document.getElementById('priority').value;
+            document.getElementById('sum-sal-prob').innerText = document.getElementById('salary-probation').value + " ₴";
+            document.getElementById('sum-sal-after').innerText = document.getElementById('salary-after').value + " ₴";
+            document.getElementById('sum-prob-dur').innerText = document.getElementById('probation-duration').value;
+
+            const fromAge = document.getElementById('candidate-age-from').value;
+            const toAge = document.getElementById('candidate-age-to').value;
+            document.getElementById('sum-age').innerText = `від ${fromAge} до ${toAge} років`;
+
+            document.getElementById('sum-edu').innerText = document.getElementById('candidate-education').value;
+            document.getElementById('sum-specialty').innerText = document.getElementById('candidate-specialty').value;
+            document.getElementById('sum-exp').innerText = document.getElementById('candidate-experience').value;
+            document.getElementById('sum-skills').innerText = document.getElementById('candidate-skills').value;
+
+            const langRows = document.querySelectorAll('#languages-container > div');
+            let summaryLangLevels = [];
+            langRows.forEach(row => {
+                const langVal = row.querySelector('.lang-select-val').value;
+                const levelVal = row.querySelector('.level-select-val').value;
+                if(langVal && levelVal) { summaryLangLevels.push(`${langVal} (${levelVal.split(' - ')[0]})`); }
+            });
+            document.getElementById('sum-lang-levels').innerText = summaryLangLevels.join(', ') || "Не вказано";
+            document.getElementById('sum-pc').innerText = document.getElementById('candidate-pc').value;
+            const needProgs = document.getElementById('need-programs').value;
+            const customProgs = document.getElementById('custom-programs').value.trim();
+            document.getElementById('sum-programs').innerText = needProgs === 'yes' ? (customProgs || '—') : 'Не потрібні';
+            document.getElementById('sum-traits').innerText = document.getElementById('candidate-traits').value;
+            document.getElementById('sum-c-fio').innerText = document.getElementById('contact-fio').value;
+            document.getElementById('sum-c-contacts').innerText = document.getElementById('contact-phone').value + " | " + (document.getElementById('contact-email').value || "немає");
+        }
+
+        function renderAzkSummary() {
+            document.getElementById('azk-sum-location').innerText = document.getElementById('azk-location').value;
+            document.getElementById('azk-sum-manager').innerText = document.getElementById('azk-manager').value;
+            document.getElementById('azk-sum-approved').innerText = document.getElementById('azk-manager-approved').value;
+            document.getElementById('azk-sum-title').innerText = document.getElementById('azk-job-title').value;
+            document.getElementById('azk-sum-v-count').innerText = document.getElementById('azk-vacancies-count').value || "1";
+            document.getElementById('azk-sum-functions').innerText = document.getElementById('azk-job-functions').value;
+            document.getElementById('azk-sum-salary').innerText = document.getElementById('azk-salary').value + " ₴";
+            document.getElementById('azk-sum-reason').innerText = document.getElementById('azk-search-reason').value;
+            document.getElementById('azk-sum-prio').innerText = document.getElementById('azk-priority').value;
+            document.getElementById('azk-sum-prob-dur').innerText = document.getElementById('azk-probation-duration').value;
+            document.getElementById('azk-sum-c-fio').innerText = document.getElementById('contact-fio').value;
+            document.getElementById('azk-sum-c-contacts').innerText = document.getElementById('contact-phone').value + " | " + (document.getElementById('contact-email').value || "немає");
+        }
+
+        // ══ МОЇ ЗАЯВКИ ══
         let _allRequests = [];
         let _curFilter   = 'all';
 
@@ -1372,12 +1793,13 @@
                 const contactParts = String(o.contactInfo || '').split(' | ');
                 const contactFio   = contactParts[0] || '—';
                 const contactRest  = contactParts.slice(1).filter(Boolean).join(' | ') || '—';
+                const typeLabel = o.requestType === 'azk' ? '<span class="req-status" style="background:rgba(245,158,11,0.15);color:#fbbf24;margin-left:6px;">⛽ АЗК</span>' : '<span class="req-status" style="background:rgba(236,72,153,0.15);color:#f9a8d4;margin-left:6px;">🏢 Офіс</span>';
                 return `
                 <div class="req-card">
                     <div style="background:linear-gradient(120deg,rgba(236,72,153,0.13),rgba(168,85,247,0.09));border-radius:12px;padding:12px 14px;margin:-14px -16px 14px;border-bottom:1px solid rgba(255,255,255,0.06);">
                         <div class="flex items-start justify-between gap-2">
                             <div>
-                                <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(90deg,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.3px;">№ ${o.orderId || '—'}</div>
+                                <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;background:linear-gradient(90deg,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.3px;">№ ${o.orderId || '—'}${typeLabel}</div>
                                 <div style="font-size:11px;color:#64748b;margin-top:3px;">${o.date || ''}</div>
                             </div>
                             ${_statusBadge(o.status)}
@@ -1455,7 +1877,7 @@
                     <span class="font-mono text-sm text-slate-300">№ ${o.orderId}</span>
                     ${_statusBadge(o.status)}
                 </div>
-                ${_dsBlock('Стан обробки', [['Дата заявки', o.date], ['Статус', o.status], ['Причина пошуку', o.searchReason], ['Стадія (Офіс)', o.stageOffice], ['Коментар офісу', o.commentOffice]])}
+                ${_dsBlock('Стан обробки', [['Дата заявки', o.date], ['Статус', o.status], ['Тип заявки', o.requestType === 'azk' ? '⛽ Працівник АЗК' : '🏢 Працівник офісу'], ['Причина пошуку', o.searchReason], ['Стадія (Офіс)', o.stageOffice], ['Коментар офісу', o.commentOffice]])}
                 ${_dsBlock('Структура та керівництво', [['Департамент/Відділ', o.department], ['Керівник', o.managerFio], ['Погоджено з керівником', o.managerApproved]])}
                 ${_dsBlock('Деталі посади', [['Вакантна посада', o.jobTitle], ['Кількість вакансій', o.vacancies], ['Підлеглі', o.subordinates], ['Пріоритет', o.priority], ['Ключові функції', o.jobFunctions]])}
                 ${_dsBlock('Вимоги до кандидата', [['Вік', o.age], ['Освіта / Спеціальність', o.education], ['Досвід роботи', o.experience], ['Знання та навички', o.skills], ['Знання мов', o.languages], ['Рівень ПК', o.pcLevel], ['Спеціалізовані програми', o.programs], ['Особисті якості', o.traits]])}
@@ -1485,121 +1907,6 @@
             showPage('page-1');
         }
 
-        function goToPage3b() {
-            const fields = [{ id: 'department', check: el => el.value.trim() }, { id: 'manager-fio', check: el => el.value.trim() }, { id: 'manager-approved', check: el => el.value }];
-            if (!markErrors(fields)) { notify("⚠️ Заповніть всі поля та оберіть варіант погодження!"); return; }
-            showPage('page-3b');
-        }
-        function goToPage4() {
-            const fields = [{ id: 'job-title', check: el => el.value.trim() }, { id: 'vacancies-count', check: el => el.value.trim() }, { id: 'subordinates-count', check: el => el.value }, { id: 'job-functions', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { notify("⚠️ Вкажіть назву посади, кількість вакансій, підлеглих та обов'язки!"); return; }
-            showPage('page-4');
-        }
-        function goToPage5() {
-            const fields = [{ id: 'search-reason', check: el => el.value }, { id: 'priority', check: el => el.value }, { id: 'salary-probation', check: el => el.value.trim() }, { id: 'salary-after', check: el => el.value.trim() }, { id: 'probation-duration', check: el => el.value }];
-            if (!markErrors(fields)) { notify("⚠️ Оберіть причину, пріоритет, термін та вкажіть умови заробітної плати!"); return; }
-            showPage('page-5');
-        }
-        function goToPage5b() {
-            const fields = [{ id: 'candidate-age-from', check: el => el.value }, { id: 'candidate-age-to', check: el => el.value }, { id: 'candidate-education', check: el => el.value }, { id: 'candidate-specialty', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { notify("⚠️ Оберіть вік, рівень освіти та вкажіть спеціальність!"); return; }
-            const fromAge = parseInt(document.getElementById('candidate-age-from').value);
-            const toAge = parseInt(document.getElementById('candidate-age-to').value);
-            if (toAge < fromAge) {
-                ['candidate-age-from','candidate-age-to'].forEach(id => flashError(document.getElementById(id)));
-                notify("⚠️ Помилка: Вік 'до' не може бути меншим за вік 'від'!"); return;
-            }
-            showPage('page-5b');
-        }
-        function goToPage5c() {
-            const fields = [{ id: 'candidate-experience', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { notify("⚠️ Заповніть вимоги щодо досвіду роботи!"); return; }
-            showPage('page-5c');
-        }
-        function goToPage6() {
-            const fields = [{ id: 'candidate-skills', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { notify("⚠️ Заповніть поле професійних знань та вмінь!"); return; }
-            showPage('page-6');
-        }
-        function goToPage6b() {
-            const langRows = document.querySelectorAll('#languages-container > div');
-            let valid = true; let count = 0;
-            langRows.forEach(row => {
-                const langSel = row.querySelector('.lang-select-val');
-                const lvlSel  = row.querySelector('.level-select-val');
-                if(!langSel.value || !lvlSel.value) { valid = false; flashError(langSel); flashError(lvlSel); }
-                count++;
-            });
-            if(count === 0) { notify("⚠️ Додайте хоча б одну мову та рівень володіння через кнопку + !"); return; }
-            if(!valid) { notify("⚠️ Будь ласка, заповніть обрані мови та рівні або видаліть порожній рядок!"); return; }
-            const pcEl = document.getElementById('candidate-pc');
-            if(!pcEl.value) { flashError(pcEl); notify("⚠️ Оберіть рівень володіння ПК!"); return; }
-            const needProgEl = document.getElementById('need-programs');
-            if(!needProgEl.value) { flashError(needProgEl); notify("⚠️ Вкажіть чи потрібні спеціалізовані програми!"); return; }
-            if(needProgEl.value === 'yes' && !document.getElementById('custom-programs').value.trim()) {
-                flashError(document.getElementById('custom-programs'));
-                notify("⚠️ Вкажіть назви спеціалізованих програм!"); return;
-            }
-            showPage('page-6b');
-        }
-        function goToPage7() {
-            const fields = [{ id: 'candidate-traits', check: el => el.value.trim() }];
-            if (!markErrors(fields)) { notify("⚠️ Опишіть особисті якості кандидата!"); return; }
-            showPage('page-7');
-        }
-
-        function renderSummary() {
-            if(!document.getElementById('contact-fio').value.trim() || !document.getElementById('contact-phone').value.trim()) { notify("⚠️ Вкажіть контактну особу та її номер телефону!"); return; }
-            if (!validatePhone(document.getElementById('contact-phone'))) return;
-            const emailField = document.getElementById('contact-email');
-            const emailValue = emailField.value.trim();
-            if (emailValue !== "") {
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(emailValue)) {
-                    notify("⚠️ Помилка: Якщо ви заповнюєте поле E-mail, воно повинно бути справжньою адресою пошти з символом @ та доменом (наприклад: name@company.com)!");
-                    emailField.classList.add('error-input');
-                    return;
-                }
-            }
-            emailField.classList.remove('error-input');
-            document.getElementById('sum-dept').innerText = document.getElementById('department').value;
-            document.getElementById('sum-manager').innerText = document.getElementById('manager-fio').value;
-            document.getElementById('sum-approved').innerText = document.getElementById('manager-approved').value;
-            document.getElementById('sum-title').innerText = document.getElementById('job-title').value;
-            document.getElementById('sum-v-count').innerText = document.getElementById('vacancies-count').value || "1";
-            document.getElementById('sum-sub-count').innerText = document.getElementById('subordinates-count').value;
-            document.getElementById('sum-functions').innerText = document.getElementById('job-functions').value;
-            document.getElementById('sum-reason').innerText = document.getElementById('search-reason').value;
-            const prioSelect = document.getElementById('priority');
-            document.getElementById('sum-prio').innerText = prioSelect ? prioSelect.value : document.getElementById('priority-value').value;
-            document.getElementById('sum-sal-prob').innerText = document.getElementById('salary-probation').value + " ₴";
-            document.getElementById('sum-sal-after').innerText = document.getElementById('salary-after').value + " ₴";
-            document.getElementById('sum-prob-dur').innerText = document.getElementById('probation-duration').value;
-            const fromAge = document.getElementById('candidate-age-from').value;
-            const toAge = document.getElementById('candidate-age-to').value;
-            document.getElementById('sum-age').innerText = `від ${fromAge} до ${toAge} років`;
-            document.getElementById('sum-edu').innerText = document.getElementById('candidate-education').value;
-            document.getElementById('sum-specialty').innerText = document.getElementById('candidate-specialty').value;
-            document.getElementById('sum-exp').innerText = document.getElementById('candidate-experience').value;
-            document.getElementById('sum-skills').innerText = document.getElementById('candidate-skills').value;
-            const langRows = document.querySelectorAll('#languages-container > div');
-            let summaryLangLevels = [];
-            langRows.forEach(row => {
-                const langVal = row.querySelector('.lang-select-val').value;
-                const levelVal = row.querySelector('.level-select-val').value;
-                if(langVal && levelVal) { summaryLangLevels.push(`${langVal} (${levelVal.split(' - ')[0]})`); }
-            });
-            document.getElementById('sum-lang-levels').innerText = summaryLangLevels.join(', ') || "Не вказано";
-            document.getElementById('sum-pc').innerText = document.getElementById('candidate-pc').value;
-            const needProgs = document.getElementById('need-programs').value;
-            const customProgs = document.getElementById('custom-programs').value.trim();
-            document.getElementById('sum-programs').innerText = needProgs === 'yes' ? (customProgs || '—') : 'Не потрібні';
-            document.getElementById('sum-traits').innerText = document.getElementById('candidate-traits').value;
-            document.getElementById('sum-c-fio').innerText = document.getElementById('contact-fio').value;
-            document.getElementById('sum-c-contacts').innerText = document.getElementById('contact-phone').value + " | " + (document.getElementById('contact-email').value || "немає");
-            showPage('page-8');
-        }
-
         function flashError(el) { el.classList.remove('error-input'); void el.offsetWidth; el.classList.add('error-input'); }
         function markErrors(fields) {
             let allOk = true;
@@ -1622,42 +1929,101 @@
             el.addEventListener('change', () => el.classList.remove('error-input'));
         });
 
+        // ══ ВІДПРАВКА (залежно від типу) ══
         function fakeSubmit() {
-            const sendBtn = document.querySelector('#page-8 button.bg-blue-600');
-            if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Відправка...'; }
-            const langRows = document.querySelectorAll('#languages-container > div');
-            const langs = [];
-            langRows.forEach(row => {
-                const l = row.querySelector('.lang-select-val')?.value;
-                const lv = row.querySelector('.level-select-val')?.value;
-                if (l && lv) langs.push(`${l} — ${lv}`);
-            });
-            const needProgs = document.getElementById('need-programs').value;
-            const programs  = needProgs === 'yes' ? document.getElementById('custom-programs').value.trim() : 'Не потрібні';
-            const payload = {
-                action: 'create_hr_request', telegram_id: TELEGRAM_ID,
-                requester_fio: localStorage.getItem('fio') || '', requester_phone: localStorage.getItem('phone') || '',
-                department: document.getElementById('department').value, manager_fio: document.getElementById('manager-fio').value,
-                manager_approved: document.getElementById('manager-approved').value, job_title: document.getElementById('job-title').value,
-                vacancies_count: document.getElementById('vacancies-count').value, subordinates_count: document.getElementById('subordinates-count').value,
-                job_functions: document.getElementById('job-functions').value, search_reason: document.getElementById('search-reason').value,
-                priority: document.getElementById('priority').value, salary_probation: document.getElementById('salary-probation').value,
-                salary_after: document.getElementById('salary-after').value, probation_duration: document.getElementById('probation-duration').value,
-                age_from: document.getElementById('candidate-age-from').value, age_to: document.getElementById('candidate-age-to').value,
-                education: document.getElementById('candidate-education').value, specialty: document.getElementById('candidate-specialty').value,
-                experience: document.getElementById('candidate-experience').value, skills: document.getElementById('candidate-skills').value,
-                languages: langs.join('; '), pc_level: document.getElementById('candidate-pc').value, programs: programs,
-                traits: document.getElementById('candidate-traits').value, contact_fio: document.getElementById('contact-fio').value,
-                contact_phone: document.getElementById('contact-phone').value, contact_email: document.getElementById('contact-email').value,
-            };
+            const submitBtnSelector = REQUEST_TYPE === 'azk'
+                ? '#page-8-azk button[onclick="fakeSubmit()"]'
+                : '#page-8 button.bg-blue-600';
+            const sendBtn = document.querySelector(submitBtnSelector);
+            if (sendBtn) { sendBtn.disabled = true; sendBtn.innerHTML = 'Відправка...'; }
+
+            let payload;
+            if (REQUEST_TYPE === 'office') {
+                const langRows = document.querySelectorAll('#languages-container > div');
+                const langs = [];
+                langRows.forEach(row => {
+                    const l = row.querySelector('.lang-select-val')?.value;
+                    const lv = row.querySelector('.level-select-val')?.value;
+                    if (l && lv) langs.push(`${l} — ${lv}`);
+                });
+                const needProgs = document.getElementById('need-programs').value;
+                const programs  = needProgs === 'yes' ? document.getElementById('custom-programs').value.trim() : 'Не потрібні';
+                payload = {
+                    action: 'create_hr_request',
+                    telegram_id: TELEGRAM_ID,
+                    request_type: 'office',
+                    requester_fio: localStorage.getItem('fio') || '',
+                    requester_phone: localStorage.getItem('phone') || '',
+                    department: document.getElementById('department').value,
+                    manager_fio: document.getElementById('manager-fio').value,
+                    manager_approved: document.getElementById('manager-approved').value,
+                    job_title: document.getElementById('job-title').value,
+                    vacancies_count: document.getElementById('vacancies-count').value,
+                    subordinates_count: document.getElementById('subordinates-count').value,
+                    job_functions: document.getElementById('job-functions').value,
+                    search_reason: document.getElementById('search-reason').value,
+                    priority: document.getElementById('priority').value,
+                    salary_probation: document.getElementById('salary-probation').value,
+                    salary_after: document.getElementById('salary-after').value,
+                    probation_duration: document.getElementById('probation-duration').value,
+                    age_from: document.getElementById('candidate-age-from').value,
+                    age_to: document.getElementById('candidate-age-to').value,
+                    education: document.getElementById('candidate-education').value,
+                    specialty: document.getElementById('candidate-specialty').value,
+                    experience: document.getElementById('candidate-experience').value,
+                    skills: document.getElementById('candidate-skills').value,
+                    languages: langs.join('; '),
+                    pc_level: document.getElementById('candidate-pc').value,
+                    programs: programs,
+                    traits: document.getElementById('candidate-traits').value,
+                    contact_fio: document.getElementById('contact-fio').value,
+                    contact_phone: document.getElementById('contact-phone').value,
+                    contact_email: document.getElementById('contact-email').value,
+                };
+            } else {
+                // АЗК
+                payload = {
+                    action: 'create_azk_request',
+                    telegram_id: TELEGRAM_ID,
+                    request_type: 'azk',
+                    requester_fio: localStorage.getItem('fio') || '',
+                    requester_phone: localStorage.getItem('phone') || '',
+                    location: document.getElementById('azk-location').value,
+                    manager_fio: document.getElementById('azk-manager').value,
+                    manager_approved: document.getElementById('azk-manager-approved').value,
+                    job_title: document.getElementById('azk-job-title').value,
+                    vacancies_count: document.getElementById('azk-vacancies-count').value,
+                    job_functions: document.getElementById('azk-job-functions').value,
+                    salary: document.getElementById('azk-salary').value,
+                    search_reason: document.getElementById('azk-search-reason').value,
+                    priority: document.getElementById('azk-priority').value,
+                    probation_duration: document.getElementById('azk-probation-duration').value,
+                    contact_fio: document.getElementById('contact-fio').value,
+                    contact_phone: document.getElementById('contact-phone').value,
+                    contact_email: document.getElementById('contact-email').value,
+                };
+            }
+
             fetch(WEBHOOK_URL, {
                 method: 'POST', body: JSON.stringify(payload),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow'
             })
             .then(r => r.json())
-            .then(data => { document.getElementById('hr-order-id').textContent = '№ ' + (data.orderId || '—'); showPage('page-success'); })
-            .catch(() => { document.getElementById('hr-order-id').textContent = '—'; showPage('page-success'); })
-            .finally(() => { if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Надіслати в HR'; } });
+            .then(data => {
+                document.getElementById('hr-order-id').textContent = '№ ' + (data.orderId || '—');
+                showPage('page-success');
+            })
+            .catch(() => {
+                document.getElementById('hr-order-id').textContent = '—';
+                showPage('page-success');
+            })
+            .finally(() => {
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> Надіслати в HR';
+                    lucide.createIcons();
+                }
+            });
         }
 
         function applyPhoneMask(e) {
