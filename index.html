@@ -92,10 +92,6 @@ select option { background-color: #0f172a; color: white; }
 .summary-block-text { font-size: 13px; color: #e2e8f0; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); margin-top: 4px; line-height: 1.6; word-break: break-word; overflow-wrap: anywhere; white-space: pre-wrap; }
 .custom-scroll::-webkit-scrollbar { width: 4px; }
 .custom-scroll::-webkit-scrollbar-thumb { background: rgba(236,72,153,0.3); border-radius: 99px; }
-.req-tab { flex-shrink:0; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
-.req-tab.active { color: #f8fafc; background: rgba(236,72,153,0.2); border-color: rgba(236,72,153,0.4); }
-.req-tab-cnt { background: rgba(255,255,255,0.15); border-radius: 99px; padding: 1px 6px; font-size: 10px; font-weight: 700; }
-.req-tab.active .req-tab-cnt { background: rgba(236,72,153,0.5); }
 .req-card { background: rgba(15,15,28,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 14px 16px; }
 .req-status { display:inline-block; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; }
 .req-status-active   { background:rgba(59,130,246,0.15);  color:#60a5fa; }
@@ -139,88 +135,6 @@ pointer-events: none;
 .type-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.2); }
 .type-card:hover::before { opacity: 0.22; }
 .type-card:active { transform: scale(0.97); }
-.type-card.disabled { cursor: not-allowed; opacity: 0.85; }
-.type-card.disabled:hover { transform: none; }
-.dev-badge {
-display: inline-flex;
-align-items: center;
-gap: 5px;
-padding: 4px 10px;
-font-size: 10px;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-border-radius: 99px;
-background: rgba(245,158,11,0.15);
-color: #fbbf24;
-border: 1px solid rgba(245,158,11,0.35);
-}
-.modal-overlay {
-position: fixed; inset: 0;
-background: rgba(6, 10, 18, 0.75);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-z-index: 1000;
-display: none;
-align-items: center;
-justify-content: center;
-padding: 24px;
-animation: fadeOverlay 0.3s ease;
-}
-.modal-overlay.show { display: flex; }
-@keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
-.modal-box {
-width: 100%;
-max-width: 360px;
-background: linear-gradient(160deg, rgba(30,25,55,0.95), rgba(15,20,40,0.95));
-border: 1px solid rgba(245,158,11,0.3);
-border-top: 1px solid rgba(245,158,11,0.5);
-border-radius: 26px;
-padding: 32px 24px 24px;
-text-align: center;
-box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 50px rgba(245,158,11,0.15);
-animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-position: relative;
-overflow: hidden;
-}
-.modal-box::before {
-content: '';
-position: absolute;
-top: -100px; left: 50%;
-transform: translateX(-50%);
-width: 300px; height: 300px;
-background: radial-gradient(circle, rgba(245,158,11,0.25), transparent 70%);
-pointer-events: none;
-}
-@keyframes modalPop {
-from { opacity: 0; transform: scale(0.7) translateY(20px); }
-to { opacity: 1; transform: scale(1) translateY(0); }
-}
-.modal-icon-wrap {
-width: 88px; height: 88px;
-margin: 0 auto 20px;
-position: relative;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-.modal-icon-wrap .ring {
-position: absolute; inset: 0;
-border-radius: 50%;
-border: 2px solid rgba(245,158,11,0.35);
-animation: pulse-ring 2.5s ease-out infinite;
-}
-.modal-icon-wrap .ring.delay { animation-delay: 1.2s; border-color: rgba(251,191,36,0.25); }
-.modal-icon-wrap .core {
-width: 72px; height: 72px;
-border-radius: 50%;
-background: linear-gradient(135deg, rgba(245,158,11,0.25), rgba(251,191,36,0.15));
-border: 1px solid rgba(245,158,11,0.4);
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 0 30px rgba(245,158,11,0.3);
-}
 .type-badge {
 display: inline-flex;
 align-items: center;
@@ -865,7 +779,7 @@ style="background:rgba(245,158,11,0.18);border:1px solid rgba(245,158,11,0.45);b
 <input type="text" id="azk-manager" placeholder="Напр: Іваненко Іван Іванович" class="w-full p-4 rounded-xl glass-input text-[15px]" oninput="lettersOnly(this)" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false">
 </div>
 <div>
-<div class="field-label"><i data-lucide="check-circle" class="w-4 h-4 text-amber-400"></i> Вакансія погоджена з Регіональним менеджером</div>
+<div class="field-label"><i data-lucide="check-circle" class="w-4 h-4 text-amber-400"></i> Вакансія погоджена з менеджером з управління АЗК</div>
 <select id="azk-manager-approved" class="w-full p-4 rounded-xl glass-input text-[15px] appearance-none">
 <option value="" disabled selected>Оберіть зі списку...</option>
 <option value="Так">🟢 Так, погоджено</option>
@@ -1338,7 +1252,8 @@ const el = document.getElementById(id); if (el) el.value = '';
 ['azk-job-title', 'azk-manager-approved', 'azk-search-reason', 'azk-priority', 'azk-probation-duration'].forEach(id => {
 const el = document.getElementById(id); if (el) el.selectedIndex = 0;
 });
-document.getElementById('azk-job-title-custom-wrap').classList.add('hidden');
+const customWrap = document.getElementById('azk-job-title-custom-wrap');
+if (customWrap) customWrap.classList.add('hidden');
 }
 function goToPage3b() {
 const fields = [
@@ -1417,16 +1332,33 @@ const fields = [
 if (!markErrors(fields)) { notify("⚠️ Заповніть всі поля та оберіть варіант погодження!"); return; }
 showPage('page-azk-2');
 }
+function toggleAzkJobTitleCustom(sel) {
+const wrap = document.getElementById('azk-job-title-custom-wrap');
+if (sel.value === 'Інше') {
+wrap.classList.remove('hidden');
+setTimeout(() => document.getElementById('azk-job-title-custom').focus(), 100);
+} else {
+wrap.classList.add('hidden');
+document.getElementById('azk-job-title-custom').value = '';
+}
+}
+function getAzkJobTitleValue() {
+const sel = document.getElementById('azk-job-title');
+if (sel.value === 'Інше') {
+return document.getElementById('azk-job-title-custom').value.trim();
+}
+return sel.value;
+}
 function goToAzkPage3() {
-const jobSel = document.getElementById('azk-job-title');
+const jobTitleEl = document.getElementById('azk-job-title');
 const vacanciesEl = document.getElementById('azk-vacancies-count');
 const functionsEl = document.getElementById('azk-job-functions');
-if (!jobSelector.value) {
-flashError(jobSelector);
+if (!jobTitleEl.value) {
+flashError(jobTitleEl);
 notify("⚠️ Оберіть назву вакантної посади!");
 return;
 }
-if (jobSelector.value === 'Інше') {
+if (jobTitleEl.value === 'Інше') {
 const customEl = document.getElementById('azk-job-title-custom');
 if (!customEl.value.trim()) {
 flashError(customEl);
@@ -1481,23 +1413,6 @@ labelEl.textContent = 'Контактна особа';
 countEl.textContent = '4 / 5';
 }
 lucide.createIcons();
-}
-function toggleAzkJobTitleCustom(sel) {
-const wrap = document.getElementById('azk-job-title-custom-wrap');
-if (sel.value === 'Інше') {
-wrap.classList.remove('hidden');
-setTimeout(() => document.getElementById('azk-job-title-custom').focus(), 100);
-} else {
-wrap.classList.add('hidden');
-document.getElementById('azk-job-title-custom').value = '';
-}
-}
-function getAzkJobTitleValue() {
-const sel = document.getElementById('azk-job-title');
-if (sel.value === 'Інше') {
-return document.getElementById('azk-job-title-custom').value.trim();
-}
-return sel.value;
 }
 function renderSummary() {
 if(!document.getElementById('contact-fio').value.trim() || !document.getElementById('contact-phone').value.trim()) {
