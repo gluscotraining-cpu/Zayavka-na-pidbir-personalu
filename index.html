@@ -1020,19 +1020,60 @@ style="background:rgba(245,158,11,0.18);border:1px solid rgba(245,158,11,0.45);b
 <script>
 const tg = window.Telegram?.WebApp;
 if(tg) { tg.expand(); try { tg.setHeaderColor('#060a12'); tg.setBackgroundColor('#060a12'); } catch(e){} }
-if (tg?.onViewportChanged) {
-tg.onViewportChanged(({ isStateStable }) => { if (isStateStable) window.scrollTo(0, 0); });
+
+// ── Haptic feedback (повернуто) ──
+function vibrate(style = 'light') {
+if (tg?.HapticFeedback) {
+['error','success','warning'].includes(style)
+? tg.HapticFeedback.notificationOccurred(style)
+: tg.HapticFeedback.impactOccurred(style);
 }
+}
+
+// ── iOS: поле не ховається за клавіатурою (м'який скрол ДО поля, а не на самий верх) ──
+document.addEventListener('focusin', function(e) {
+if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+setTimeout(() => { try { e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(_){} }, 300);
+}
+});
+
+// ── iOS FIX: Кнопки ЗАВЖДИ активні (навіть коли курсор у полі / відкрита клавіатура) ──
+function dismissKeyboard() {
+const el = document.activeElement;
+if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) el.blur();
+}
+let _pendingBtn = null;
+document.addEventListener('touchstart', function(e) {
+const btn = e.target.closest('button');
+if (!btn || btn.disabled) return;
+dismissKeyboard();
+_pendingBtn = btn;
+}, { passive: true });
+document.addEventListener('touchend', function(e) {
+const btn = e.target.closest('button');
+if (!btn || btn.disabled || btn !== _pendingBtn) { _pendingBtn = null; return; }
+_pendingBtn = null;
+e.preventDefault();
+btn.click();
+}, { passive: false });
+document.addEventListener('touchcancel', () => { _pendingBtn = null; }, { passive: true });
+
 function notify(msg) {
 if (tg?.showAlert) { tg.showAlert(msg); }
 else { alert(msg); }
 }
+
 const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwMaHkrRhSVEUOsQS9DA4eZqEsywJKG8N1yWRVUtRlOpuqx_NEh4LufSFSqUIszWmXH7g/exec';
 const TELEGRAM_ID = tg?.initDataUnsafe?.user?.id || 'BROWSER_TEST_MODE';
 let REQUEST_TYPE = 'office';
+
 function checkAccess() {
 if (TELEGRAM_ID === 'BROWSER_TEST_MODE') { hideSplash(); return; }
 const phone = localStorage.getItem('phone') || '';
+
+// Запобіжник: якщо мережа зависне — не тримати splash вічно
+const splashTimeout = setTimeout(() => { hideSplash(); }, 9000);
+
 fetch(WEBHOOK_URL, {
 method: 'POST',
 body: JSON.stringify({ action: 'check_whitelist', telegram_id: TELEGRAM_ID, phone: phone }),
@@ -1041,6 +1082,7 @@ redirect: 'follow'
 })
 .then(r => r.json())
 .then(data => {
+clearTimeout(splashTimeout);
 hideSplash();
 if (data.allowed) {
 if (data.fio)   localStorage.setItem('fio', data.fio);
@@ -1056,7 +1098,7 @@ case 'fired': showDenied('fired'); break;
 default: showDenied(data.reason || 'unknown');
 }
 })
-.catch(() => hideSplash());
+.catch(() => { clearTimeout(splashTimeout); hideSplash(); });
 }
 function hideSplash() { document.getElementById('page-splash').style.display = 'none'; }
 function showOnlyPage(id) {
@@ -1111,6 +1153,7 @@ if (data.status === 'success') {
 localStorage.setItem('fio', fioEl.value.trim());
 localStorage.setItem('phone', phoneEl.value.trim());
 localStorage.setItem('role', roleEl.value.trim());
+vibrate('success');
 notify("✅ Реєстрація успішна! Ласкаво просимо.");
 location.reload();
 } else if (data.reason === 'fired') { showDenied('fired'); }
@@ -1129,6 +1172,7 @@ lucide.createIcons();
 function submitVerification() {
 const phoneEl = document.getElementById('verify-phone');
 if (!phoneEl.value.trim()) { flashError(phoneEl); notify("⚠️ Введіть номер телефону!"); return; }
+if (!validatePhone(phoneEl)) return;
 const btn = document.getElementById('verify-submit-btn');
 btn.disabled = true; btn.innerHTML = 'Перевірка...';
 localStorage.setItem('phone', phoneEl.value.trim());
@@ -1180,7 +1224,8 @@ const num = container.children.length + 1;
 const languages = ["Українська", "Англійська", "Російська", "Німецька", "Польська", "Французька", "Іспанська", "Італійська", "Інша"];
 const levels = ["A1 – Початковий", "A2 – Елементарний", "B1 – Середній", "B2 – Вище середнього", "C1 – Просунутий", "C2 – Вільне володіння"];
 let langOptions = languages.map(l => `<option value="${l}" ${l === lang ? 'selected' : ''}>${l}</option>`).join('');
-let levelOptions = levels.map(v => `<option value="${v}" ${v === level || v.includes(level) ? 'selected' : ''}>${v}</option>`).join('');
+// ВИПРАВЛЕНО: позначаємо вибраним лише коли level не порожній і реально співпадає
+let levelOptions = levels.map(v => `<option value="${v}" ${level && v.startsWith(level) ? 'selected' : ''}>${v}</option>`).join('');
 const rowHtml = `
 <div id="${rowId}" class="bg-black/30 p-3 rounded-xl border border-white/8 animate-fade" style="border-color:rgba(255,255,255,0.06)">
 <div class="flex items-center justify-between mb-2">
@@ -1203,7 +1248,9 @@ lucide.createIcons();
 }
 function removeLanguageRow(id) { const row = document.getElementById(id); if (row) row.remove(); }
 addLanguageRow("Українська", "C2");
+
 function showPage(id) {
+vibrate('light');
 document.querySelectorAll('.page-section').forEach(p => { p.classList.add('hidden'); });
 const targetPage = document.getElementById(id);
 targetPage.classList.remove('hidden');
@@ -1390,6 +1437,7 @@ return;
 }
 }
 emailField.classList.remove('error-input');
+REQUEST_TYPE = 'office';
 renderOfficeSummary();
 showPage('page-8');
 }
@@ -1418,7 +1466,8 @@ let summaryLangLevels = [];
 langRows.forEach(row => {
 const langVal = row.querySelector('.lang-select-val').value;
 const levelVal = row.querySelector('.level-select-val').value;
-if(langVal && levelVal) { summaryLangLevels.push(`${langVal} (${levelVal.split(' - ')[0]})`); }
+// ВИПРАВЛЕНО: спліт по тире (підтримує і – і -)
+if(langVal && levelVal) { summaryLangLevels.push(`${langVal} (${levelVal.split(/\s[–-]\s/)[0].trim()})`); }
 });
 document.getElementById('sum-lang-levels').innerText = summaryLangLevels.join(', ') || "Не вказано";
 document.getElementById('sum-pc').innerText = document.getElementById('candidate-pc').value;
@@ -1464,7 +1513,9 @@ redirect: 'follow'
 .then(res => {
 if (res.status === 'success') {
 _allRequests = res.orders || [];
-_updateCounters(res.counts || {});
+// ВИПРАВЛЕНО: лічильники рахуємо клієнтом тією ж логікою що й список —
+// тоді число на табі завжди = кількості карток
+_updateCounters(_computeCounts());
 filterRequests(_curFilter);
 }
 })
@@ -1479,6 +1530,11 @@ if (['скасован'].some(v => s.includes(v))) return 'cancel';
 if (['відхилен'].some(v => s.includes(v))) return 'rejected';
 if (['архів'].some(v => s.includes(v))) return 'archive';
 return 'active';
+}
+function _computeCounts() {
+const c = { all: _allRequests.length, active: 0, done: 0, cancel: 0, rejected: 0, archive: 0 };
+_allRequests.forEach(o => { const g = _statusGroup(o.status); if (c[g] !== undefined) c[g]++; });
+return c;
 }
 function _statusBadge(status) {
 const g = _statusGroup(status);
@@ -1567,7 +1623,7 @@ showPage('page-cancel-request');
 }
 function submitCancelRequest() {
 const reason = document.getElementById('cancel-reason-text').value.trim();
-if (!reason) { notify('⚠️ Вкажіть причину скасування!'); return; }
+if (!reason) { flashError(document.getElementById('cancel-reason-text')); notify('⚠️ Вкажіть причину скасування!'); return; }
 fetch(WEBHOOK_URL, {
 method: 'POST',
 body: JSON.stringify({ action: 'cancel_hr_request', orderId: _cancelOrderId, cancel_reason: reason }),
@@ -1576,7 +1632,7 @@ redirect: 'follow'
 })
 .then(r => r.json())
 .then(res => {
-if (res.status === 'success') { showPage('page-my-requests'); loadMyRequests(); }
+if (res.status === 'success') { vibrate('warning'); showPage('page-my-requests'); loadMyRequests(); }
 else { notify('⚠️ Помилка: ' + (res.message || 'невідома')); }
 })
 .catch(() => notify('⚠️ Помилка з\'єднання. Спробуйте ще раз.'));
@@ -1585,7 +1641,7 @@ function _dsRow(label, val) {
 if (!val) return '';
 return `<div class="flex justify-between gap-3 text-sm py-2 border-b border-white/5 last:border-0">
 <span class="text-slate-400 flex-shrink-0">${label}</span>
-<span class="text-white text-right">${val}</span>
+<span class="text-white text-right" style="word-break:break-word;overflow-wrap:anywhere;min-width:0;">${val}</span>
 </div>`;
 }
 function _dsBlock(title, rows) {
@@ -1631,9 +1687,10 @@ headers: { 'Content-Type': 'text/plain;charset=utf-8' },
 redirect: 'follow'
 }).catch(() => {});
 }
+vibrate('success');
 showPage('page-1');
 }
-function flashError(el) { el.classList.remove('error-input'); void el.offsetWidth; el.classList.add('error-input'); }
+function flashError(el) { if(!el) return; vibrate('error'); el.classList.remove('error-input'); void el.offsetWidth; el.classList.add('error-input'); }
 function markErrors(fields) {
 let allOk = true;
 fields.forEach(({ id, check }) => {
@@ -1648,7 +1705,8 @@ const wrap = document.getElementById('custom-programs-wrap');
 if (sel.value === 'yes') { wrap.classList.remove('hidden'); setTimeout(() => document.getElementById('custom-programs').focus(), 100); }
 else { wrap.classList.add('hidden'); document.getElementById('custom-programs').value = ''; }
 }
-function lettersOnly(el) { el.value = el.value.replace(/[^а-яА-ЯіІїЇєЄa-zA-Z\s'\-,.]/g, ''); }
+// ВИПРАВЛЕНО: додано ґ Ґ та апостроф ʼ
+function lettersOnly(el) { el.value = el.value.replace(/[^а-яА-ЯіІїЇєЄґҐa-zA-Z\s'ʼ\-,.]/g, ''); }
 function digitsOnly(el) { el.value = el.value.replace(/\D/g, ''); }
 document.querySelectorAll('input, textarea, select').forEach(el => {
 el.addEventListener('input', () => el.classList.remove('error-input'));
@@ -1728,6 +1786,7 @@ headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow'
 })
 .then(r => r.json())
 .then(data => {
+vibrate('success');
 document.getElementById('hr-order-id').textContent = '№ ' + (data.orderId || '—');
 showPage('page-success');
 })
@@ -1766,7 +1825,7 @@ document.getElementById('user-fio').value   = localStorage.getItem('fio') || '';
 document.getElementById('user-phone').value = localStorage.getItem('phone') || '';
 document.getElementById('user-role').value  = localStorage.getItem('role') || '';
 }
+
 </script>
 </body>
 </html>
-
